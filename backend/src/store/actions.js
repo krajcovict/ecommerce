@@ -1,11 +1,11 @@
 import axiosClient from '../axios';
 
-export function getUser({ commit }) {
-    return axiosClient.get('/user')
-        .then(response => {
-            commit('setUser', response.data);
-            return response;
-        });
+export function getUser({commit}, data) {
+  return axiosClient.get('/user', data)
+    .then(({data}) => {
+      commit('setUser', data);
+      return data;
+    })
 }
 
 export function login({ commit }, data) {
