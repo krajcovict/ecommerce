@@ -20,7 +20,7 @@ axiosClient.interceptors.response.use(response => {
             router.push({ name: "login" });
         });
     }
-    console.error("API Error:", error);
+    throw error;
 });
 
 export default axiosClient;

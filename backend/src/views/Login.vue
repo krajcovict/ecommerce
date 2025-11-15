@@ -1,8 +1,21 @@
 <template>
   <GuestLayout title="Sign in to your account">
     <form class="space-y-6" method="POST" @submit.prevent="login">
+        <div v-if="errorMsg" class="flex items-center justify-between py-3 px-5 text-sm/6 font-medium rounded-md border border-red-400 bg-red-200 p-2 text-red-700">
+            {{ errorMsg }}
+            <span @click="errorMsg = ''"
+            class="cursor-pointer w-8 h-8 ml-3 flex items-center justify-center
+            rounded-full transition-colors duration-500 bg-red-300 text-red-700 font-bold
+            hover:bg-red-400">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
+                  <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z" clip-rule="evenodd" />
+                </svg>
+            </span>
+        </div>
         <div>
-          <label for="email" class="block text-sm/6 font-medium text-gray-900">Email address</label>
+          <label for="email" class="block text-sm/6 font-medium text-gray-900">
+            Email address
+        </label>
           <div class="mt-2">
             <input type="email" name="email" id="email"
             autocomplete="email" required="" v-model="user.email"
@@ -12,7 +25,9 @@
 
         <div>
           <div class="flex items-center justify-between">
-            <label for="password" class="block text-sm/6 font-medium text-gray-900">Password</label>
+            <label for="password" class="block text-sm/6 font-medium text-gray-900">
+                Password
+            </label>
             <div class="text-sm">
               <router-link :to="{name: 'requestPassword'}" class="font-semibold text-indigo-600 hover:text-indigo-500">Forgot password?</router-link>
             </div>

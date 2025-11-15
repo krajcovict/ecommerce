@@ -11,7 +11,7 @@
             <MenuButton class="flex items-center justify-center">
               <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="user avatar"
               class="w-10 rounded-full mr-3"/>
-                <small class="text-gray-700">Jane Smith</small>
+                <small class="text-gray-700">{{ currentUser.name }}</small>
               <ChevronDownIcon
                 class="-mr-1 ml-2 h-5 w-5 text-indigo-300 hover:text-indigo-200"
                 aria-hidden="true"
@@ -73,11 +73,14 @@
 import { Bars4Icon, ChevronDownIcon, UserCircleIcon, ArrowRightStartOnRectangleIcon } from '@heroicons/vue/24/outline'
 import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue'
 import { useRouter } from 'vue-router';
+import { computed } from 'vue';
 import store from '../store';
 
 const router = useRouter();
 
 const emit = defineEmits(['toggle-sidebar']);
+
+const currentUser = computed(() => store.state.user.data);
 
 function logout() {
     store.dispatch('logout')
