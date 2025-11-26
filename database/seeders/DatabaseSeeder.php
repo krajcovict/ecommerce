@@ -8,7 +8,8 @@ use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
+    // use WithoutModelEvents; // TODO : Remove this trait entirely.
+    // This trait prevents Eloquent events from firing, preventing HasSlug trait's to execute the slug generation.
 
     /**
      * Seed the application's database.
