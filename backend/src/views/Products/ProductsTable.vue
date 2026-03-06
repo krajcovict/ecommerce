@@ -1,10 +1,4 @@
 <template>
-    <div class="flex items-center justify-between mb-3">
-        <h1 class="text-3xl font-semibold">Products</h1>
-        <button type="submit" class="py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-            Add new Product
-        </button>
-    </div>
     <div class="bg-white p-4 rounded-lg shadow">
         <div class="flex justify-between border-b-2 pb-3">
             <div class="flex items-center">
@@ -27,19 +21,25 @@
                 placeholder="Type to Search products">
             </div>
         </div>
-        <Spinner v-if="products.loading"/>
-        <div v-else>
+        <div>
             <table class="table-auto w-full">
                 <thead>
                     <tr>
-                        <th class="border-b-2 text-left">ID</th>
-                        <th class="border-b-2 text-left">Image</th>
-                        <th class="border-b-2 text-left">Title</th>
-                        <th class="border-b-2 text-left">Price</th>
-                        <th class="border-b-2 text-left">Last Updated At</th>
+                        <TableHeaderCell @click="sortProduct" class="border-b-2 p-2 text-left" field="id" :sort-field="sortField" :sort-direction="sortDirection">ID</TableHeaderCell>
+                        <TableHeaderCell class="border-b-2 p-2 text-left" field="image" :sort-field="sortField" :sort-direction="sortDirection">Image</TableHeaderCell>
+                        <TableHeaderCell @click="sortProduct" class="border-b-2 p-2 text-left" field="title" :sort-field="sortField" :sort-direction="sortDirection">Title</TableHeaderCell>
+                        <TableHeaderCell @click="sortProduct" class="border-b-2 p-2 text-left" field="price" :sort-field="sortField" :sort-direction="sortDirection">Price</TableHeaderCell>
+                        <TableHeaderCell @click="sortProduct" class="border-b-2 p-2 text-left" field="updated_at" :sort-field="sortField" :sort-direction="sortDirection">Last Updated At</TableHeaderCell>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody v-if="products.loading">
+                    <tr>
+                        <td colspan="5">
+                            <Spinner class="my-4 w-full"/>
+                        </td>
+                    </tr>
+                </tbody>
+                <tbody v-else>
                     <tr v-for="product of products.data">
                         <td class="border-b p-2">{{ product.id }}</td>
                         <td class="border-b p-2">
@@ -53,7 +53,7 @@
                     </tr>
                 </tbody>
             </table>
-            <div class="flex justify-between items-center mt-5">
+            <div v-if="!products.loading" class="flex justify-between items-center mt-5">
                 <span>
                     Showing from {{ products.from }} to {{ products.to }} of {{ products.total }} products
                 </span>
@@ -87,13 +87,16 @@
 
 <script setup>
 import { computed, onMounted, ref } from 'vue';
-import Spinner from '../components/core/Spinner.vue';
-import store from '../store/index.js';
-import { PRODUCTS_PER_PAGE } from '../constants.js';
+import Spinner from '../../components/core/Spinner.vue';
+import TableHeaderCell from '../../components/core/Table/TableHeaderCell.vue';
+import store from '../../store/index.js';
+import { PRODUCTS_PER_PAGE } from '../../constants.js';
 
 const perPage = ref(PRODUCTS_PER_PAGE);
 const search = ref('');
 const products = computed(() => store.state.products);
+const sortField = ref('updated_at');
+const sortDirection = ref('desc');
 
 onMounted(() => {
     getProducts();
@@ -102,6 +105,8 @@ onMounted(() => {
 function getProducts(url = null) {
     store.dispatch('getProducts', {
         url,
+        sort_field: sortField.value,
+        sort_direction: sortDirection.value,
         search: search.value,
         perPage: perPage.value,
     });
@@ -112,6 +117,16 @@ function getForPage(ev, link) {
         return;
     };
     getProducts(link.url);
+}
+
+function sortProduct(field) {
+    if (sortField.value === field) {
+        sortDirection.value = sortDirection.value === 'asc' ? 'desc' : 'asc';
+    } else {
+        sortField.value = field;
+        sortDirection.value = 'asc';
+    }
+    getProducts();
 }
 
 </script>

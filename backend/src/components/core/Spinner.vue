@@ -1,4 +1,3 @@
-
 <template>
     <svg
     class="h-10 w-10 size-5 animate-spin text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
