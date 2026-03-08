@@ -29,7 +29,7 @@
                 :name="name"
                 :required="required"
                 :value="props.modelValue"
-                @input="emit('update:modelValue', $event.targret.value)"
+                @input="emit('update:modelValue', $event.target.value)"
                 :class="inputClasses"
                 :placeholder="label"
                 step="0.01"/>

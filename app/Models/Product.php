@@ -15,6 +15,8 @@ class Product extends Model
     use HasSlug;
     use SoftDeletes;
 
+    protected $fillable = ['title', 'description', 'price', 'image', 'image_mime', 'image_size', 'created_by', 'updated_by'];
+
     // TODO : Make fillable or guarded as per your requirement
 
     public function getSlugOptions(): SlugOptions

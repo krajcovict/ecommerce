@@ -29,12 +29,11 @@
             <DialogPanel
               class="w-full max-w-md transform overflow-hidden rounded-2xl bg-white text-left align-middle shadow-xl transition-all"
             >
-              <Spinner v-if="loading"
-              class="absolute left-0 top-0 bg-white right-0 bottom-0 flex items-center justify-center"/>
               <header class="py-3 px-4 flex justify-between items-center">
                 <DialogTitle>
                     {{ product.id ? `Update product: "${props.product.title}"` : 'Create new Product' }}
                 </DialogTitle>
+
                 <button
                     @click="closeModal"
                     class="w-8 h-8 flex justify-center rounded-full transition-colors cursor-pointer hover:bg-[rgba(0,0,0,0.2)]"
@@ -44,6 +43,8 @@
                     </svg>
                 </button>
               </header>
+              <Spinner v-if="loading"
+              class="absolute place-self-center flex items-center justify-center"/>
 
               <form @submit.prevent="onSubmit">
                 <div class="bg-white px-4 pt-5 pb-4">
