@@ -25,11 +25,17 @@
             <table class="table-auto w-full">
                 <thead>
                     <tr>
-                        <TableHeaderCell @click="sortProduct" class="border-b-2 p-2 text-left" field="id" :sort-field="sortField" :sort-direction="sortDirection">ID</TableHeaderCell>
-                        <TableHeaderCell class="border-b-2 p-2 text-left" field="image" :sort-field="sortField" :sort-direction="sortDirection">Image</TableHeaderCell>
-                        <TableHeaderCell @click="sortProduct" class="border-b-2 p-2 text-left" field="title" :sort-field="sortField" :sort-direction="sortDirection">Title</TableHeaderCell>
-                        <TableHeaderCell @click="sortProduct" class="border-b-2 p-2 text-left" field="price" :sort-field="sortField" :sort-direction="sortDirection">Price</TableHeaderCell>
-                        <TableHeaderCell @click="sortProduct" class="border-b-2 p-2 text-left" field="updated_at" :sort-field="sortField" :sort-direction="sortDirection">Last Updated At</TableHeaderCell>
+                        <TableHeaderCell @click="sortProduct" class="border-b-2 p-2 text-left" field="id"
+                        :sort-field="sortField" :sort-direction="sortDirection">ID</TableHeaderCell>
+                        <TableHeaderCell class="border-b-2 p-2 text-left" field="image"
+                        :sort-field="sortField" :sort-direction="sortDirection">Image</TableHeaderCell>
+                        <TableHeaderCell @click="sortProduct" class="border-b-2 p-2 text-left" field="title"
+                        :sort-field="sortField" :sort-direction="sortDirection">Title</TableHeaderCell>
+                        <TableHeaderCell @click="sortProduct" class="border-b-2 p-2 text-left" field="price"
+                        :sort-field="sortField" :sort-direction="sortDirection">Price</TableHeaderCell>
+                        <TableHeaderCell @click="sortProduct" class="border-b-2 p-2 text-left" field="updated_at"
+                        :sort-field="sortField" :sort-direction="sortDirection">Last Updated At</TableHeaderCell>
+                        <TableHeaderCell field="actions"></TableHeaderCell>
                     </tr>
                 </thead>
                 <tbody v-if="products.loading">
@@ -43,13 +49,74 @@
                     <tr v-for="product of products.data">
                         <td class="border-b p-2">{{ product.id }}</td>
                         <td class="border-b p-2">
-                            <img class="w-16" :src="product.image" :alt="product.title">
+                            <img class="w-16" :src="product.image_url" :alt="product.title">
                         </td>
                         <td class="border-b p-2 max-w-[200px] whitespace-nowrap overflow-hidden text-ellipsis">
                             {{ product.title }}
                         </td>
                         <td class="border-b p-2">{{ product.price }}</td>
                         <td class="border-b p-2">{{ product.updated_at }}</td>
+                        <td class="border-b p-2">
+                            <Menu as="div" class="relative inline-block text-left">
+                                <div>
+                                  <MenuButton
+                                    class="inline-flex z-0 w-full justify-center rounded-md bg-black/20 px-2 py-2 text-sm font-medium text-white hover:bg-black/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75"
+                                  >
+                                    <EllipsisVerticalIcon
+                                      class="mr-1 ml-1 h-5 w-5 text-gray-900 hover:text-indigo-400"
+                                      aria-hidden="true"
+                                    />
+                                  </MenuButton>
+                                </div>
+                                <transition
+                                    enter-active-class="transition duration-100 ease-out"
+                                    enter-from-class="transform scale-95 opacity-0"
+                                    enter-to-class="transform scale-100 opacity-100"
+                                    leave-active-class="transition duration-75 ease-in"
+                                    leave-from-class="transform scale-100 opacity-100"
+                                    leave-to-class="transform scale-95 opacity-0"
+                                ></transition>
+                                <MenuItems
+                                  class="absolute z-10 right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none"
+                                >
+
+                                    <div class="px-1 py-1">
+                                        <MenuItem v-slot="{ active }">
+                                          <button
+                                            :class="[
+                                              active ? 'bg-indigo-600 text-white' : 'text-gray-900',
+                                              'group flex w-full items-center rounded-md px-2 py-2 text-sm',
+                                            ]"
+                                            @click="editProduct(product)"
+                                          >
+                                            <PencilSquareIcon
+                                              :active="active"
+                                              class="mr-2 h-5 w-5 text-indigo-400"
+                                              aria-hidden="true"
+                                            />
+                                            Edit
+                                          </button>
+                                        </MenuItem>
+                                        <MenuItem v-slot="{ active }">
+                                          <button
+                                            :class="[
+                                              active ? 'bg-indigo-600 text-white' : 'text-gray-900',
+                                              'group flex w-full items-center rounded-md px-2 py-2 text-sm',
+                                            ]"
+                                            @click="deleteProduct(product)"
+                                          >
+                                            <TrashIcon
+                                              :active="active"
+                                              class="mr-2 h-5 w-5 text-indigo-400"
+                                              aria-hidden="true"
+                                            />
+                                            Delete
+                                          </button>
+                                        </MenuItem>
+                                    </div>
+                                </MenuItems>
+                            </Menu>
+                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -91,6 +158,10 @@ import Spinner from '../../components/core/Spinner.vue';
 import TableHeaderCell from '../../components/core/Table/TableHeaderCell.vue';
 import store from '../../store/index.js';
 import { PRODUCTS_PER_PAGE } from '../../constants.js';
+import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue'
+import { EllipsisVerticalIcon, TrashIcon, PencilSquareIcon } from '@heroicons/vue/20/solid'
+
+const emit = defineEmits(['clickEdit'])
 
 const perPage = ref(PRODUCTS_PER_PAGE);
 const search = ref('');
@@ -127,6 +198,21 @@ function sortProduct(field) {
         sortDirection.value = 'asc';
     }
     getProducts();
+}
+
+function editProduct(product) {
+    emit('clickEdit', product)
+}
+
+function deleteProduct(product) {
+    if (!confirm(`Are you sure you want to delete the product?`)) {
+        return
+    }
+    store.dispatch('deleteProduct', product.id)
+        .then(res => {
+            // TODO show notification
+            store.dispatch('getProducts')
+        })
 }
 
 </script>
