@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-white p-4 rounded-lg shadow">
+    <div class="bg-white p-4 rounded-lg shadow animate-fade-in-down">
         <div class="flex justify-between border-b-2 pb-3">
             <div class="flex items-center">
                 <span class="whitespace-nowrap mr-3">
@@ -40,15 +40,15 @@
                 </thead>
                 <tbody v-if="products.loading">
                     <tr>
-                        <td colspan="5">
+                        <td colspan="6">
                             <Spinner class="my-4 w-full"/>
                         </td>
                     </tr>
                 </tbody>
                 <tbody v-else>
-                    <tr v-for="product of products.data">
+                    <tr v-for="(product, index) of products.data" :key="product.id">
                         <td class="border-b p-2">{{ product.id }}</td>
-                        <td class="border-b p-2">
+                        <td class="border-b p-2 animate-fade-in-down" :style="{ animationDelay: `${index * 0.1}s` }">
                             <img class="w-16" :src="product.image_url" :alt="product.title">
                         </td>
                         <td class="border-b p-2 max-w-[200px] whitespace-nowrap overflow-hidden text-ellipsis">
