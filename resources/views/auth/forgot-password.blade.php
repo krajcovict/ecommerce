@@ -4,14 +4,6 @@
         <h2 class="text-center font-semibold text-center mb-5">
           {{ __('Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.') }}
         </h2>
-        <p class="text-center text-gray-500 mb-6">
-          or
-          <a
-            href="{{ route('login') }}"
-            class="text-purple-600 hover:text-purple-500"
-            >login with existing account</a
-          >
-        </p>
 
         <!-- Session Status -->
         <x-auth-session-status class="mb-4" :status="session('status')" />
@@ -27,5 +19,4 @@
           {{ __('Email Password Reset Link') }}
         </button>
       </form>
-
 </x-app-layout>

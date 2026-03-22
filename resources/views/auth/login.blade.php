@@ -4,12 +4,12 @@
         <h2 class="text-2xl font-semibold text-center mb-5">
           Login to your account
         </h2>
-        <p class="text-center text-gray-500 mb-6">
-          or
+        <p class="text-right text-gray-500 mb-6">
+
           <a
             href="{{ route('register') }}"
             class="text-sm text-purple-700 hover:text-purple-600"
-            >create new account</a
+            >{{ __('Already registered?') }}</a
           >
         </p>
 
