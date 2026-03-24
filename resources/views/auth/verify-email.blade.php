@@ -1,5 +1,6 @@
-<x-guest-layout>
-    <div class="mb-4 text-sm text-gray-600">
+<x-app-layout>
+<div class="w-[400px] mx-auto p-6 my-16">
+    <div class="mb-4 text-gray-600">
         {{ __('Thanks for signing up! Before getting started, could you verify your email address by clicking on the link we just emailed to you? If you didn\'t receive the email, we will gladly send you another.') }}
     </div>
 
@@ -14,18 +15,21 @@
             @csrf
 
             <div>
-                <x-primary-button>
-                    {{ __('Resend Verification Email') }}
-                </x-primary-button>
+                <button
+              class="btn-primary bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700 w-full mt-4"
+            >
+              {{ __('Resend Verification Email') }}
+            </button>
             </div>
         </form>
 
         <form method="POST" action="{{ route('logout') }}">
             @csrf
 
-            <button type="submit" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            <button type="submit" class="text-sm text-purple-700 hover:text-purple-600">
                 {{ __('Log Out') }}
             </button>
         </form>
     </div>
-</x-guest-layout>
+</div>
+</x-app-layout>
