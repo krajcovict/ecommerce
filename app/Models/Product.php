@@ -17,8 +17,6 @@ class Product extends Model
 
     protected $fillable = ['title', 'description', 'price', 'image', 'image_mime', 'image_size', 'created_by', 'updated_by'];
 
-    // TODO : Make fillable or guarded as per your requirement
-
     public function getSlugOptions(): SlugOptions
     {
         Log::info(
@@ -27,5 +25,10 @@ class Product extends Model
         return SlugOptions::create()
             ->generateSlugsFrom('title')
             ->saveSlugsTo('slug');
+    }
+
+    public function getRouteKeyName()
+    {
+        return 'slug';
     }
 }

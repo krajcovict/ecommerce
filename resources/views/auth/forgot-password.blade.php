@@ -1,7 +1,7 @@
 <x-app-layout>
       <form action="{{ route('password.email') }}" method="post" class="w-[400px] mx-auto p-6 my-16">
         @csrf
-        <h2 class="text-center font-semibold text-center mb-5">
+        <h2 class="text-center font-semibold mb-5">
           {{ __('Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.') }}
         </h2>
 
