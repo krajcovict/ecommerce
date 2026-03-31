@@ -1,11 +1,23 @@
 <?php
 
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', [App\Http\Controllers\ProductController::class, 'index'])->name('home');
-Route::get('/product/{product:slug}', [App\Http\Controllers\ProductController::class, 'view'])->name('product.view');
+// User has to be guest or have verified email address here:
+Route::middleware(['guestOrVerified'])->group(function(){
+    Route::get('/', [App\Http\Controllers\ProductController::class, 'index'])->name('home');
+    Route::get('/product/{product:slug}', [App\Http\Controllers\ProductController::class, 'view'])->name('product.view');
 
+    Route::prefix('/cart')->name('cart.')->group(function () {
+        Route::get('/', [CartController::class, 'index'])->name('index');
+        Route::get('/add/{product:slug}', [CartController::class, 'add'])->name('add');
+        Route::get('/remove/{product:slug}', [CartController::class, 'remove'])->name('remove');
+        Route::get('/update-quantity/{product:slug}', [CartController::class, 'updateQuantity'])->name('update-quantity');
+    });
+});
+
+// TODO delete this, it's not needed:
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
