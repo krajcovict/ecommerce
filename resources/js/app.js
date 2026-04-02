@@ -3,7 +3,7 @@ import './bootstrap';
 import Alpine from 'alpinejs';
 import persist from '@alpinejs/persist';
 import collapse from '@alpinejs/collapse'
-import { post } from './http.js';
+import { get, post } from './http.js';
 
 Alpine.plugin(persist);
 Alpine.plugin(collapse);
@@ -55,41 +55,48 @@ document.addEventListener("alpine:init", () => {
 
   Alpine.data("productItem", (product) => {
     return {
-
       product,
-
       addToCart(quantity = 1) {
-          post(this.product.addToCartUrl, { quantity })
-              .then(result => {
-                  this.$dispatch('cart-change', { count: result.count })
-                  this.$dispatch("notify", {
-                      message: "The item was added into the cart",
-                  })
-              })
-              .catch(response => {
-                  console.log(response);
+        post(this.product.addToCartUrl, {quantity})
+          .then(result => {
+            this.$dispatch('cart-change', {count: result.count})
+            this.$dispatch("notify", {
+              message: "The item was added into the cart",
+            });
+          })
+          .catch(response => {
+            console.log(response);
+            this.$dispatch('notify', {
+              message: response.message || 'Server Error. Please try again.',
+              type: 'error'
+            })
           })
       },
       removeItemFromCart() {
-          post(this.product.removeUrl)
-              .then(result => {
-                  this.$dispatch("notify", {
-                      message: "The item was removed from cart",
-                  })
-                  this.$dispatch('cart-change', { count: result.count })
-                  this.cartItems = this.cartItems.filter(p => p.id !== product.id)
+        post(this.product.removeUrl)
+          .then(result => {
+            this.$dispatch("notify", {
+              message: "The item was removed from cart",
+            });
+            this.$dispatch('cart-change', {count: result.count})
+            this.cartItems = this.cartItems.filter(p => p.id !== product.id)
           })
       },
       changeQuantity() {
-          post(this.product.updateQuantityUrl, { quantity: product.quantity })
-              .then(result => {
-                  this.$dispatch('cart-change', { count: result.count })
-                  this.$dispatch("notify", {
-                      message: "The item quantity was updated",
-                  })
+        post(this.product.updateQuantityUrl, {quantity: product.quantity})
+          .then(result => {
+            this.$dispatch('cart-change', {count: result.count})
+            this.$dispatch("notify", {
+              message: "The item quantity was updated",
+            });
+          })
+          .catch(response => {
+            this.$dispatch('notify', {
+              message: response.message || 'Server Error. Please try again.',
+              type: 'error'
+            })
           })
       },
-
     };
   });
 });
