@@ -19,6 +19,7 @@ class Cart
             return array_reduce(
                 $cartItems,
                 fn($carry, $item) => $carry + $item['quantity'],
+                0
             );
         }
     }

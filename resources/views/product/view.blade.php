@@ -1,5 +1,13 @@
 <x-app-layout>
-      <div class="container p-5 mx-auto">
+      <div x-data="productItem({{
+            json_encode([
+                'id' => $product->id,
+                'image' => $product->image ?: '/img/noimage.png',
+                'title' => $product->title,
+                'price' => $product->price,
+                'addToCartUrl' => route('cart.add', $product)
+            ])
+       }})" class="container p-5 mx-auto">
         <div class="grid gap-6 grid-cols-1 lg:grid-cols-5">
           <div class="lg:col-span-3">
             <div
@@ -97,12 +105,13 @@
                 type="number"
                 name="quantity"
                 x-ref="quantityEl"
+                min="1"
                 value="1"
                 class="w-32 focus:border-purple-500 focus:outline-none rounded"
               />
             </div>
             <button
-              @click="addToCart(id, $refs.quantityEl.value)"
+              @click="addToCart($refs.quantityEl.value)"
               class="btn-primary py-4 text-lg flex justify-center min-w-0 w-full mb-6"
             >
               <svg

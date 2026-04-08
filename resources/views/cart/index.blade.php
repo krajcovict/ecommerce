@@ -51,6 +51,7 @@
                         Qty:
                         <input
                           type="number"
+                          min="1"
                           x-model="product.quantity"
                           @change="changeQuantity()"
                           class="ml-3 py-1 border-gray-200 focus:border-purple-600 focus:ring-purple-600 w-16"
@@ -73,7 +74,7 @@
 
 
             <!--/ Product Items -->
-  
+
             <div class="border-t border-gray-300 pt-4">
               <div class="flex justify-between">
                 <span class="font-semibold">Subtotal</span>
@@ -82,7 +83,7 @@
               <p class="text-gray-500 mb-6">
                 Shipping and taxes calculated at checkout.
               </p>
-  
+
               <button type="submit" class="btn-primary w-full py-3 text-lg">
                 Proceed to Checkout
               </button>

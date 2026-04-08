@@ -17,7 +17,7 @@ Route::middleware(['guestOrVerified'])->group(function(){
     });
 });
 
-// TODO delete this, it's not needed:
+// TODO delete this, it's not needed - really??? I don't think so.:
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
