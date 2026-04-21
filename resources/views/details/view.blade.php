@@ -1,4 +1,9 @@
 <x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Customer Details') }}
+        </h2>
+    </x-slot>
     <div x-data="{
         flashMessage: '{{ \Illuminate\Support\Facades\Session::get('flash_message') }}',
         init() {
@@ -44,7 +49,7 @@
                 }"
                 action="{{ route('details.update') }}" method="post">
                     @csrf
-                    <h2 class="text-xl font-semibold mb-2">Customer Details</h2>
+                    <h2 class="text-xl font-semibold mb-2">Name and Contact Information</h2>
                     <div class="grid grid-cols-2 gap-3 mb-3">
                         <x-input
                             type="text"
