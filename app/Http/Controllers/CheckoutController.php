@@ -91,12 +91,12 @@ class CheckoutController extends Controller
         try {
             $session = $stripe->checkout->sessions->retrieve($_GET['session_id']);
             if (!$session) {
-                return view('checkout.failure');
+                return view('checkout.failure', ['message' => 'Session ID is invalid.']);
             }
 
             $payment = Payment::query()->where(['session_id' => $session->id, 'status' => PaymentStatus::Pending])->first();
             if (!$payment) {
-                return view('checkout.failure');
+                return view('checkout.failure', ['message' => 'Payment failed.']);
             }
             $payment->status = PaymentStatus::Paid;
             $payment->update();
@@ -122,7 +122,17 @@ class CheckoutController extends Controller
 
     public function failure(Request $request)
     {
-        return view('checkout.failure');
+        return view('checkout.failure', ['message' => 'Payment has been cancelled.']);
     }
 
+    public function checkoutOrder(Order $order, Request $request)
+    {
+        $user = $request->user();
+        
+        $stripe = new \Stripe\StripeClient([
+          "api_key" => getenv('STRIPE_SECRET_KEY')
+        ]);
+
+        dd($order);
+    }
 }
