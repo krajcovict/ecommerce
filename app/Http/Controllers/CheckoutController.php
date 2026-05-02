@@ -7,6 +7,7 @@ use App\Enums\PaymentStatus;
 use App\Helpers\Cart;
 use App\Models\CartItem;
 use App\Models\Order;
+use App\Models\OrderItem;
 use App\Models\Payment;
 use Illuminate\Http\Request;
 
@@ -22,6 +23,7 @@ class CheckoutController extends Controller
         [$products, $cartItems] = Cart::getProductsAndCartItems();
 
         $lineItems = [];
+        $orderItems = [];
         $totalPrice = 0;
 
         foreach ($products as $product) {
@@ -38,6 +40,11 @@ class CheckoutController extends Controller
                 ],
                 'quantity' => $quantity,
             ];
+            $orderItems[] = [
+                'product_id' => $product->id,
+                'quantity' => $quantity,
+                'unit_price' => $product->price,
+            ];
         }
 
         $checkout_session = $stripe->checkout->sessions->create
@@ -48,6 +55,7 @@ class CheckoutController extends Controller
               'cancel_url' => route('checkout.failure', [], true),
             ]);
 
+        // Create Order in our database
         $orderData = [
             'total_price' => $totalPrice,
             'status' => OrderStatus::Unpaid,
@@ -56,10 +64,13 @@ class CheckoutController extends Controller
         ];
         $order = Order::create($orderData);
 
-        // echo '<pre>';
-        // var_dump($checkout_session->id,);
-        // echo '</pre>';
+        // Create Order Items in our database
+        foreach ($orderItems as $orderItem) {
+            $orderItem['order_id'] = $order->id;
+            OrderItem::create($orderItem);
+        }
 
+        // Create Payment in our database
         $paymentData = [
             'order_id' => $order->id,
             'amount' => $totalPrice,
@@ -71,11 +82,6 @@ class CheckoutController extends Controller
         ];
 
         Payment::create($paymentData);
-
-        // echo '<pre>';
-        // var_dump($paymentData);
-        // echo '</pre>';
-        // exit;
 
         return redirect()->away($checkout_session->url, 303);
     }
@@ -111,10 +117,11 @@ class CheckoutController extends Controller
 
             //dd($order->created_by);
             //$customer = $stripe->customers->retrieve($session->customer);
-
+            //$name = $user->customer->id;
             //return view('checkout.success', compact('customer'));
             // TODO: implement customer
             return view('checkout.success');
+            //return view('checkout.success', compact('name'));
         } catch (\Exception $e) {
             return view('checkout.failure', ['message' => $e->getMessage()]);
         }
@@ -128,11 +135,38 @@ class CheckoutController extends Controller
     public function checkoutOrder(Order $order, Request $request)
     {
         $user = $request->user();
-        
+
         $stripe = new \Stripe\StripeClient([
           "api_key" => getenv('STRIPE_SECRET_KEY')
         ]);
 
-        dd($order);
+        $lineItems = [];
+
+        foreach ($order->items as $item) {
+            $lineItems[] = [
+                'price_data' => [
+                    'currency' => 'usd',
+                    'product_data' => [
+                        'name' => $item->product->title,
+                        'images' => [$item->product->image],
+                    ],
+                    'unit_amount' => $item->product->price * 100,
+                ],
+                'quantity' => $item->quantity,
+            ];
+        }
+
+        $checkout_session = $stripe->checkout->sessions->create
+            ([
+              'line_items' => $lineItems,
+              'mode' => 'payment',
+              'success_url' => route('checkout.success', [], true) . '?session_id={CHECKOUT_SESSION_ID}',
+              'cancel_url' => route('checkout.failure', [], true),
+            ]);
+
+        $order->payment->session_id = $checkout_session->id;
+        $order->payment->save();
+
+        return redirect()->away($checkout_session->url, 303);
     }
 }
