@@ -10,6 +10,7 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Payment;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class CheckoutController extends Controller
 {
@@ -25,7 +26,7 @@ class CheckoutController extends Controller
         $lineItems = [];
         $orderItems = [];
         $totalPrice = 0;
-
+    // TODO: Repair Stripe checkout with 'noimage' item
         foreach ($products as $product) {
             $quantity = $cartItems[$product->id]['quantity'];
             $totalPrice += $product->price * $quantity;
@@ -82,6 +83,7 @@ class CheckoutController extends Controller
         ];
 
         Payment::create($paymentData);
+        CartItem::query()->where(['user_id' => $user->id])->delete();
 
         return redirect()->away($checkout_session->url, 303);
     }
@@ -100,28 +102,27 @@ class CheckoutController extends Controller
                 return view('checkout.failure', ['message' => 'Session ID is invalid.']);
             }
 
-            $payment = Payment::query()->where(['session_id' => $session->id, 'status' => PaymentStatus::Pending])->first();
+            $session_id = $session->id;
+
+            $payment = Payment::query()->where('session_id', $session_id)
+                ->whereIn('status', [PaymentStatus::Pending, PaymentStatus::Paid])
+                ->first();
             if (!$payment) {
-                return view('checkout.failure', ['message' => 'Payment failed.']);
+                return throw new NotFoundHttpException();
             }
-            $payment->status = PaymentStatus::Paid;
-            $payment->update();
+            if ($payment->status === PaymentStatus::Pending) {
+                $this->updateOrderAndPayment($payment);
+            }
 
-            $order = $payment->order;
-
-            $order->status = OrderStatus::Paid;
-            $order->update();
-
-
-            CartItem::query()->where(['user_id' => $user->id])->delete();
-
-            //dd($order->created_by);
+            //dd($payment->created_by);
             //$customer = $stripe->customers->retrieve($session->customer);
-            //$name = $user->customer->id;
+            //$name = $customer->user->id;
             //return view('checkout.success', compact('customer'));
             // TODO: implement customer
             return view('checkout.success');
             //return view('checkout.success', compact('name'));
+        } catch (NotFoundHttpException $e) {
+            throw $e;
         } catch (\Exception $e) {
             return view('checkout.failure', ['message' => $e->getMessage()]);
         }
@@ -134,8 +135,6 @@ class CheckoutController extends Controller
 
     public function checkoutOrder(Order $order, Request $request)
     {
-        $user = $request->user();
-
         $stripe = new \Stripe\StripeClient([
           "api_key" => getenv('STRIPE_SECRET_KEY')
         ]);
@@ -168,5 +167,79 @@ class CheckoutController extends Controller
         $order->payment->save();
 
         return redirect()->away($checkout_session->url, 303);
+    }
+
+    public function webhook()
+    {
+        $stripe = new \Stripe\StripeClient([
+          "api_key" => getenv('STRIPE_SECRET_KEY')
+        ]);
+
+        // STRIPE_WEBHOOK_SECRET
+        // $stripe = new \Stripe\StripeClient($stripeSecretKey);
+        // Replace this endpoint secret with your endpoint's unique secret
+        // If you are testing with the CLI, find the secret by running 'stripe listen'
+        // If you are using an endpoint defined with the API or dashboard, look in your webhook settings
+        // at https://dashboard.stripe.com/webhooks
+        $endpoint_secret = getenv('STRIPE_WEBHOOK_SECRET');
+
+        $payload = @file_get_contents('php://input');
+        $event = null;
+
+        try {
+          $event = \Stripe\Event::constructFrom(
+            json_decode($payload, true)
+          );
+        } catch(\UnexpectedValueException $e) {
+          // Invalid payload
+          echo '⚠️  Webhook error while parsing basic request.';
+          return response('', 401);
+          exit();
+        }
+        if ($endpoint_secret) {
+          // Only verify the event if there is an endpoint secret defined
+          // Otherwise use the basic decoded event
+          $sig_header = $_SERVER['HTTP_STRIPE_SIGNATURE'];
+          try {
+            $event = \Stripe\Webhook::constructEvent(
+              $payload, $sig_header, $endpoint_secret
+            );
+          } catch(\Stripe\Exception\SignatureVerificationException $e) {
+            // Invalid signature
+            echo '⚠️  Webhook error while validating signature.';
+            return response('', 402);
+            exit();
+          }
+        }
+
+        // Handle the event
+        switch ($event->type) {
+          case 'checkout.session.completed':
+            $checkout = $event->data->object;
+            $session_id = $checkout['id'];
+            $payment = Payment::query()->where(['session_id' => $session_id, 'status' => PaymentStatus::Pending,])
+                ->first();
+
+            if ($payment) {
+                $this->updateOrderAndPayment($payment);
+            }
+
+            break;
+          default:
+            // Unexpected event type
+            error_log('Received unknown event type');
+        }
+
+        return response('', 200);
+    }
+
+    private function updateOrderAndPayment(Payment $payment)
+    {
+        $payment->status = PaymentStatus::Paid;
+        $payment->update();
+
+        $order = $payment->order;
+        $order->status = OrderStatus::Paid;
+        $order->update();
     }
 }
