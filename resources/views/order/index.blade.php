@@ -13,7 +13,7 @@
       <div class="container lg:w-2/3 xl:w-2/3 mx-auto">
         <h1 class="text-3xl font-bold mb-6">My Orders</h1>
 
-        <div class="bg-white p-3 rounded-md shadow-md">
+        <div class="bg-white p-3 mb-3 rounded-md shadow-md">
           <table class="table table-auto w-full">
             <thead class="border-b-2">
               <tr class="text-left">
@@ -21,6 +21,7 @@
                 <th>Date</th>
                 <th>Status</th>
                 <th>Total</th>
+                <th># of Items</th>
                 <th class="w-64">Actions</th>
               </tr>
             </thead>
@@ -44,6 +45,7 @@
                   </small>
                 </td>
                 <td>${{ number_format($order->total_price, 2) }}</td>
+                <td>{{ $order->items->count() }}</td>
                 <td class="flex gap-3">
                   <div x-data="{open: false}">
                     <button
@@ -148,6 +150,7 @@
             </tbody>
           </table>
         </div>
+        {{ $orders->links() }}
       </div>
     </main>
 </x-app-layout>
