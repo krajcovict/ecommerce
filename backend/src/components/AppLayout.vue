@@ -3,8 +3,8 @@
     <Sidebar :class="{ '-ml-[200px]' : !sidebarOpened}" />
     <div class="flex-1">
         <Navbar @toggle-sidebar="toggleSidebar"/>
-        <main class="p-5">
-            <div class="p-4 rounded bg-white">
+        <main class="p-2">
+            <div class="p-2 rounded bg-white">
               <router-view></router-view>
             </div>
         </main>
