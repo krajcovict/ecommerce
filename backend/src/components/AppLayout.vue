@@ -1,10 +1,10 @@
 <template>
   <div v-if="currentUser" class="flex min-h-full rounded-lg bg-gray-200">
     <Sidebar :class="{ '-ml-[200px]' : !sidebarOpened}" />
-    <div class="flex-1">
+    <div class="flex-1 overflow-x-auto">
         <Navbar @toggle-sidebar="toggleSidebar"/>
-        <main class="p-2">
-            <div class="p-2 rounded bg-white">
+        <main class="p-1">
+            <div class="p-1 rounded bg-white">
               <router-view></router-view>
             </div>
         </main>

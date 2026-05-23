@@ -45,7 +45,7 @@
                         </td>
                     </tr>
                 </tbody>
-                <tbody v-else>
+                <tbody v-else class="bg-white">
                     <tr v-for="(product, index) of products.data" :key="product.id">
                         <td class="border-b p-2">{{ product.id }}</td>
                         <td class="border-b p-2 animate-fade-in-down" :style="{ animationDelay: `${index * 0.1}s` }">

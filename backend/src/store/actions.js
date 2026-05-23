@@ -100,6 +100,6 @@ export function getOrders({commit}, {url = null, search = '', perPage = 20, sort
         });
 };
 
-export function getOrder({ }, id) {
+export function getOrder({ commit }, id) {
     return axiosClient.get(`/orders/${id}`)
 }
