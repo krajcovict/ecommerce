@@ -1,12 +1,12 @@
 <template>
-    <div class="bg-white p-4 rounded-lg shadow animate-fade-in-down">
+    <div class="bg-white p-4 rounded-lg shadow">
         <div class="flex justify-between border-b-2 pb-3">
             <div class="flex items-center">
                 <span class="whitespace-nowrap mr-3">
                     Per Page
                 </span>
                 <select @change="getOrders(null)" v-model="perPage"
-                class="appearance-none relative block w-12 px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                class="appearance-none block w-12 px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 >
                     <option value="5">5</option>
                     <option value="10">10</option>
@@ -18,11 +18,11 @@
             </div>
             <div>
                 <input v-model="search" @change="getOrders(null)"
-                class="appearance-none relative block w-24 px-2 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                class="appearance-none block w-24 px-2 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 placeholder="Search">
             </div>
         </div>
-        <div class="">
+        <div>
             <table class="table-auto w-full">
                 <thead>
                     <tr>

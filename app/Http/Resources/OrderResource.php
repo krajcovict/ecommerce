@@ -31,6 +31,7 @@ class OrderResource extends JsonResource
                     'id' => $item->product->id,
                     'slug' => $item->product->slug,
                     'title' => $item->product->title,
+                    'image' => $item->product->image,
                 ],
             ]),
             'customer' => [
