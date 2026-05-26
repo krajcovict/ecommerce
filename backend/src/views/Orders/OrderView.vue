@@ -7,7 +7,7 @@
         <tbody>
           <tr>
             <td class="font-bold px-2 py-1">Order # </td>
-            <td> {{ order.id }}</td>
+            <td class="flex justify-between"> {{ order.id }} <OrderStatus :order="order" /></td>
           </tr>
           <tr>
             <td class="font-bold px-2 py-1">Order Date </td>
@@ -16,13 +16,9 @@
           <tr>
             <td class="font-bold px-2 py-1">Status </td>
             <td>
-              <span class="text-white p-1 rounded"
-                :class="{
-                    'bg-gray-400': order.status !== paid,
-                    'bg-emerald-500': order.status === paid,
-                }">
-                  {{ order.status }}
-              </span>
+                <select v-model="order.status" @change="onStatusChange">
+                    <option v-for="status of orderStatuses" :value="status">{{status}}</option>
+                </select>
             </td>
           </tr>
           <tr>
@@ -103,18 +99,29 @@ import store from "../../store";
 import OrdersTable from "./OrdersTable.vue";
 import { useRoute } from "vue-router";
 import axiosClient from "../../axios";
+import OrderStatus from './OrderStatus.vue';
 
 const route = useRoute();
 
 const order = ref(null);
+const orderStatuses = ref([]);
 
 onMounted(() => {
     store.dispatch("getOrder", route.params.id)
         .then(({ data }) => {
             order.value = data
         })
+
+    axiosClient.get('/orders/statuses')
+        .then(({ data }) => orderStatuses.value = data)
 });
 
+function onStatusChange() {
+    axiosClient.post(`/orders/change-status/${order.value.id}/${order.value.status}`)
+        .then(({ data }) => {
+        console.log("Order status changed successfully")
+    })
+};
 
 </script>
 

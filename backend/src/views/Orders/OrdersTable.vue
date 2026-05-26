@@ -50,7 +50,7 @@
                     <tr v-for="(order, index) of orders.data" :key="order.id">
                         <td class="border-b p-2">{{ order.id }}</td>
                         <td class="border-b p-2 animate-fade-in-down" :style="{ animationDelay: `${index * 0.05}s` }">
-                            <span class="text-xs">{{ order.status }}</span>
+                            <OrderStatus :order="order" />
                         </td>
                         <td class="border-b p-2 max-w-[180px] text-pretty overflow-hidden text-ellipsis">
                             {{ order.created_at }}
@@ -59,7 +59,7 @@
                         <td class="border-b p-2">{{ order.customer.id }}</td>
                         <td class="border-b p-2">
                             <router-link :to="{ name: 'app.orders.view', params: { id: order.id } }"
-                                class="w-8 h-6 rounded-full border-1 border-indigo-700 text-indigo-700 flex justify-center items-center hover:text-white hover:bg-indigo-700">
+                                class="w-8 h-6 rounded-full border border-indigo-700 text-indigo-700 flex justify-center items-center hover:text-white hover:bg-indigo-700">
                                 <EyeIcon class="size-5"/>
                             </router-link>
                         </td>
@@ -102,6 +102,7 @@
 import { computed, onMounted, ref } from 'vue';
 import Spinner from '../../components/core/Spinner.vue';
 import TableHeaderCell from '../../components/core/Table/TableHeaderCell.vue';
+import OrderStatus from './OrderStatus.vue';
 import store from '../../store/index.js';
 import { ORDERS_PER_PAGE } from '../../constants.js';
 import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue'
