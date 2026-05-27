@@ -1,18 +1,19 @@
 <template>
-  <div v-if="currentUser" class="flex min-h-full rounded-lg bg-gray-200">
-    <Sidebar :class="{ '-ml-[200px]' : !sidebarOpened}" />
-    <div class="flex-1 overflow-x-auto">
-        <Navbar @toggle-sidebar="toggleSidebar"/>
-        <main class="p-1">
-            <div class="p-1 rounded bg-white">
-              <router-view></router-view>
-            </div>
-        </main>
+    <div v-if="currentUser" class="flex min-h-full rounded-lg bg-gray-200">
+        <Sidebar :class="{ '-ml-[200px]': !sidebarOpened }" />
+        <div class="flex-1 overflow-x-auto">
+            <Navbar @toggle-sidebar="toggleSidebar" />
+            <main class="p-1">
+                <div class="p-1 rounded bg-white">
+                    <router-view></router-view>
+                </div>
+            </main>
+        </div>
     </div>
-  </div>
-  <div v-else class="min-h-full flex items-center justify-center bg-gray-200">
-    <Spinner />
-  </div>
+    <div v-else class="min-h-full flex items-center justify-center bg-gray-200">
+        <Spinner />
+    </div>
+    <Toast />
 </template>
 
 <script setup>
@@ -21,8 +22,9 @@ import Sidebar from './Sidebar.vue';
 import Navbar from './Navbar.vue';
 import store from '../store';
 import Spinner from './core/Spinner.vue';
+import Toast from './core/Toast.vue';
 
-const {title} = defineProps({
+const { title } = defineProps({
     title: String
 });
 
@@ -46,6 +48,4 @@ function handleResize() {
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

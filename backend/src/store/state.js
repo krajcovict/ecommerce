@@ -1,7 +1,7 @@
 const state = {
-        user: {
-            token: sessionStorage.getItem('TOKEN') || null,
-            data: null,
+    user: {
+        token: sessionStorage.getItem('TOKEN') || null,
+        data: null,
     },
     products: {
         loading: false,
@@ -22,7 +22,13 @@ const state = {
         page: 1,
         limit: null,
         total: null,
-    }
+    },
+    toast: {
+        show: false,
+        message: '',
+        type: 'success',
+        delay: 5000,
+    },
     };
 
 export default state;

@@ -119,8 +119,9 @@ onMounted(() => {
 function onStatusChange() {
     axiosClient.post(`/orders/change-status/${order.value.id}/${order.value.status}`)
         .then(({ data }) => {
-        console.log("Order status changed successfully")
-    })
+            store.commit('showToast', `Order status was updated to "${order.value.status}" successfully.`);
+            //console.log('status updated');
+        })
 };
 
 </script>
