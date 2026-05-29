@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Api;
 use App\Enums\OrderStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\OrderResource;
+use App\Mail\OrderUpdateEmail;
 use App\Models\Order;
 use App\Http\Resources\OrderListResource;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class OrderController extends Controller
 {
@@ -46,6 +48,10 @@ class OrderController extends Controller
     {
         $order->status = $status;
         $order->save();
+
+        // Send an email
+        Mail::to($order->user)->send(new OrderUpdateEmail($order));
+
         return response('', 200);
     }
 }

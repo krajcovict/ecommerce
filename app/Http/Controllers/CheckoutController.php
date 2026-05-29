@@ -5,11 +5,14 @@ namespace App\Http\Controllers;
 use App\Enums\OrderStatus;
 use App\Enums\PaymentStatus;
 use App\Helpers\Cart;
+use App\Mail\NewOrderEmail;
 use App\Models\CartItem;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Payment;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class CheckoutController extends Controller
@@ -235,11 +238,17 @@ class CheckoutController extends Controller
 
     private function updateOrderAndPayment(Payment $payment)
     {
-        $payment->status = PaymentStatus::Paid;
+        $payment->status = PaymentStatus::Paid->value;
         $payment->update();
 
         $order = $payment->order;
-        $order->status = OrderStatus::Paid;
+        $order->status = OrderStatus::Paid->value;
         $order->update();
+
+        // Send an email
+        $adminUsers = User::where('is_admin', 1)->get();
+        foreach ([...$adminUsers, $order->user] as $user) {
+            Mail::to($user)->send(new NewOrderEmail($order, (bool)$user->is_admin));
+        }
     }
 }
