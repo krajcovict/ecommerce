@@ -20,7 +20,7 @@ class AuthController extends Controller
         unset($credentials['remember']);
         if (!Auth::attempt($credentials, $remember)) {
             return response(
-                ['message' => 'Email or password is incorrect'],
+                ['message' => 'Email or password is incorrect.'],
                 422
             );
         }
@@ -32,7 +32,15 @@ class AuthController extends Controller
         if (!$user->is_admin) {
             Auth::logout();
             return response([
-                'message' => 'You don\'t have permission to authenticate as admin'],
+                'message' => 'You don\'t have permission to authenticate as admin.'],
+                403
+            );
+        }
+        $user = Auth::user();
+        if (!$user->email_verified_at) {
+            Auth::logout();
+            return response([
+                'message' => 'Your email address is not verified yet.'],
                 403
             );
         }

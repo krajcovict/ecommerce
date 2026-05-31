@@ -25,6 +25,8 @@ export function logout({ commit }) {
         });
 }
 
+// products
+
 export function getProducts({commit}, {url = null, search = '', perPage = 20, sort_field, sort_direction} = {}) {
     commit('setProducts', [true]);
     url = url || '/products';
@@ -81,6 +83,8 @@ export function deleteProduct({ commit }, id) {
     return axiosClient.delete(`/products/${id}`)
 }
 
+// orders
+
 export function getOrders({commit}, {url = null, search = '', perPage = 20, sort_field, sort_direction} = {}) {
     commit('setOrders', [true]);
     url = url || '/orders';
@@ -104,6 +108,8 @@ export function getOrder({ commit }, id) {
     return axiosClient.get(`/orders/${id}`)
 }
 
+// users
+
 export function getUser({ }, id) {
     return axiosClient.get(`/users/${id}`)
 }
@@ -126,3 +132,21 @@ export function getUsers({commit}, {url = null, search = '', perPage = 20, sort_
             commit('setUsers', [false]);
         });
 };
+
+export function updateUser({commit}, user) {
+    return axiosClient.put(`/users/${user.id}`, user)
+}
+
+export function createUser({commit}, user) {
+    return axiosClient.post('/users', user)
+}
+
+// customers
+
+export function updateCustomer({commit}, customer) {
+    return axiosClient.put(`/customers/${customer.id}`, customer)
+}
+
+export function createCustomer({commit}, customer) {
+    return axiosClient.post('/customers', customer)
+}

@@ -31,7 +31,7 @@
             >
               <header class="py-3 px-4 flex justify-between items-center">
                 <DialogTitle>
-                    {{ user.id ? `Update user: "${props.user.title}"` : 'Create new User' }}
+                    {{ user.id ? `Update user: "${props.user.name}"` : 'Create new User' }}
                 </DialogTitle>
 
                 <button
@@ -48,10 +48,9 @@
 
               <form @submit.prevent="onSubmit">
                 <div class="bg-white px-4 pt-5 pb-4">
-                    <CustomInput class="mb-2" v-model="user.title" label="UserTitle" />
-                    <CustomInput type="file" class="mb-2" label="User Image" @change="file => user.image = file" />
-                    <CustomInput type="textarea" class="mb-2" v-model="user.description" label="Description" />
-                    <CustomInput type="number" class="mb-2" v-model="user.price" label="price" prepend="$" />
+                    <CustomInput class="mb-2" v-model="user.name" label="User Name" />
+                    <CustomInput class="mb-2" v-model="user.email" label="User Email" />
+                    <CustomInput type="password" class="mb-2" v-model="user.password" label="User Password" />
                 </div>
                 <footer class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse">
                     <button type="submit"
@@ -106,10 +105,8 @@ const props = defineProps({
 
 const user = ref({
     id: props.user.id,
-    title: props.user.title,
-    image: props.user.image,
-    description: props.user.description,
-    price: props.user.price,
+    name: props.user.name,
+    email: props.user.email,
 })
 
 const emit = defineEmits(['update:modelValue'])
@@ -122,10 +119,9 @@ const show = computed({
 onUpdated (() => {
     user.value = {
         id: props.user.id,
-        title: props.user.title,
-        image: props.user.image,
+        name: props.user.name,
+        email: props.user.email,
         description: props.user.description,
-        price: props.user.price,
     }
 })
 

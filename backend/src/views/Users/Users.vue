@@ -34,11 +34,8 @@ function showUserModal() {
 }
 
 function editUser(user) {
-    store.dispatch('getUser', user.id)
-        .then(({ data }) => {
-            userModel.value = data
-            showUserModal()
-        })
+    userModel.value = user
+    showUserModal()
 }
 
 function onModalClose() {
