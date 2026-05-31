@@ -1,6 +1,6 @@
 import axiosClient from '../axios';
 
-export function getUser({commit}, data) {
+export function getCurrentUser({commit}, data) {
   return axiosClient.get('/user', data)
     .then(({data}) => {
       commit('setUser', data);
@@ -103,3 +103,26 @@ export function getOrders({commit}, {url = null, search = '', perPage = 20, sort
 export function getOrder({ commit }, id) {
     return axiosClient.get(`/orders/${id}`)
 }
+
+export function getUser({ }, id) {
+    return axiosClient.get(`/users/${id}`)
+}
+
+export function getUsers({commit}, {url = null, search = '', perPage = 20, sort_field, sort_direction} = {}) {
+    commit('setUsers', [true]);
+    url = url || '/users';
+    return axiosClient.get(url, {
+        params: {
+            search,
+            per_page: perPage,
+            sort_field,
+            sort_direction
+        }
+    })
+        .then(res => {
+            commit('setUsers', [false, res.data]);
+        })
+        .catch(() => {
+            commit('setUsers', [false]);
+        });
+};

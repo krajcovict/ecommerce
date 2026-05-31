@@ -22,7 +22,7 @@
             Orders
         </span>
     </router-link>
-    <router-link :to="{ name: 'app.dashboard' }"
+    <router-link :to="{ name: 'app.users' }"
     class="flex items-center py-2 px-3 rounded hover:bg-black/30 transition-colors duration-600 mb-2">
         <span><UsersIcon class="w-5 mr-2.5"/></span>
         <span class="text-sm">

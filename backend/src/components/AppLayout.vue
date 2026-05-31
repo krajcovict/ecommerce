@@ -35,7 +35,7 @@ function toggleSidebar() {
     sidebarOpened.value = !sidebarOpened.value;
 }
 onMounted(() => {
-    store.dispatch('getUser');
+    store.dispatch('getCurrentUser');
     handleResize();
     window.addEventListener('resize', handleResize);
 });
