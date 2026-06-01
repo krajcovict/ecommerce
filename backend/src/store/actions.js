@@ -110,10 +110,6 @@ export function getOrder({ commit }, id) {
 
 // users
 
-export function getUser({ }, id) {
-    return axiosClient.get(`/users/${id}`)
-}
-
 export function getUsers({commit}, {url = null, search = '', perPage = 20, sort_field, sort_direction} = {}) {
     commit('setUsers', [true]);
     url = url || '/users';
@@ -150,3 +146,26 @@ export function updateCustomer({commit}, customer) {
 export function createCustomer({commit}, customer) {
     return axiosClient.post('/customers', customer)
 }
+
+export function deleteCustomer({ commit }, customer) {
+    return axiosClient.delete(`/customers/${customer.id}`)
+}
+
+export function getCustomers({commit}, {url = null, search = '', perPage = 20, sort_field, sort_direction} = {}) {
+    commit('setCustomers', [true]);
+    url = url || '/customers';
+    return axiosClient.get(url, {
+        params: {
+            search,
+            per_page: perPage,
+            sort_field,
+            sort_direction
+        }
+    })
+        .then(res => {
+            commit('setCustomers', [false, res.data]);
+        })
+        .catch(() => {
+            commit('setCustomers', [false]);
+        });
+};

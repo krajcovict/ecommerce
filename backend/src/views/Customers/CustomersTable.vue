@@ -5,7 +5,7 @@
                 <span class="whitespace-nowrap mr-3">
                     Per Page
                 </span>
-                <select @change="getUsers(null)" v-model="perPage"
+                <select @change="getCustomers(null)" v-model="perPage"
                 class="appearance-none block w-12 px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 >
                     <option value="5">5</option>
@@ -16,7 +16,7 @@
                 </select>
             </div>
             <div>
-                <input v-model="search" @change="getUsers(null)"
+                <input v-model="search" @change="getCustomers(null)"
                 class="appearance-none block w-32 px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 placeholder="Type to Search">
             </div>
@@ -25,34 +25,42 @@
             <table class="table-auto w-full">
                 <thead>
                     <tr>
-                        <TableHeaderCell @click="sortUser" class="border-b-2 p-2 text-left" field="id"
+                        <TableHeaderCell @click="sortCustomer" class="border-b-2 p-2 text-left" field="id"
                             :sort-field="sortField" :sort-direction="sortDirection">ID</TableHeaderCell>
-                        <TableHeaderCell @click="sortUser" class="border-b-2 p-2 text-left" field="name"
+                        <TableHeaderCell @click="sortCustomer" class="border-b-2 p-2 text-left" field="name"
                             :sort-field="sortField" :sort-direction="sortDirection">Name</TableHeaderCell>
-                        <TableHeaderCell @click="sortUser" class="border-b-2 p-2 text-left" field="email"
+                        <TableHeaderCell @click="sortCustomer" class="border-b-2 p-2 text-left" field="email"
                             :sort-field="sortField" :sort-direction="sortDirection">Email</TableHeaderCell>
-                        <TableHeaderCell @click="sortUser" class="border-b-2 p-2 text-left" field="created_at"
-                            :sort-field="sortField" :sort-direction="sortDirection">Create Date</TableHeaderCell>
+                        <TableHeaderCell @click="sortCustomer" class="border-b-2 p-2 text-left" field="phone"
+                            :sort-field="sortField" :sort-direction="sortDirection">Phone</TableHeaderCell>
+                        <TableHeaderCell @click="sortCustomer" class="border-b-2 p-2 text-left" field="status"
+                            :sort-field="sortField" :sort-direction="sortDirection">Status</TableHeaderCell>
+
+                        <TableHeaderCell @click="sortCustomer" class="border-b-2 p-2 text-left" field="created_at"
+                            :sort-field="sortField" :sort-direction="sortDirection">Registration Date</TableHeaderCell>
+
                         <TableHeaderCell field="actions"></TableHeaderCell>
                     </tr>
                 </thead>
-                <tbody v-if="users.loading || !users.data.length">
+                <tbody v-if="customers.loading || !customers.data.length">
                     <tr>
-                        <td colspan="6">
+                        <td colspan="7">
                             <Spinner class="my-4 w-full"/>
                         </td>
                     </tr>
                 </tbody>
                 <tbody v-else class="bg-white">
-                    <tr v-for="(user, index) of users.data" :key="user.id">
-                        <td class="border-b p-2">{{ user.id }}</td>
+                    <tr v-for="(customer, index) of customers.data" :key="customer.id">
+                        <td class="border-b p-2">{{ customer.id }}</td>
                         <td class="border-b p-2 animate-fade-in-down" :style="{ animationDelay: `${index * 0.1}s` }">
-                            {{ user.name }}
+                            {{ customer.name }}
                         </td>
                         <td class="border-b p-2 max-w-[200px] text-pretty overflow-hidden text-ellipsis">
-                            {{ user.email }}
+                            {{ customer.email }}
                         </td>
-                        <td class="border-b text-pretty p-2">{{ user.created_at }}</td>
+                        <td class="border-b text-pretty p-2">{{ customer.phone }}</td>
+                        <td class="border-b text-pretty p-2">{{ customer.status }}</td>
+                        <td class="border-b text-pretty p-2">{{ customer.created_at }}</td>
                         <td class="border-b p-2">
                             <Menu as="div" class="relative inline-block text-left">
                                 <div>
@@ -84,7 +92,7 @@
                                               active ? 'bg-indigo-600 text-white' : 'text-gray-900',
                                               'group flex w-full items-center rounded-md px-2 py-2 text-sm',
                                             ]"
-                                            @click="editUser(user)"
+                                            @click="editCustomer(customer)"
                                           >
                                             <PencilSquareIcon
                                               :active="active"
@@ -100,7 +108,7 @@
                                               active ? 'bg-indigo-600 text-white' : 'text-gray-900',
                                               'group flex w-full items-center rounded-md px-2 py-2 text-sm',
                                             ]"
-                                            @click="deleteUser(user)"
+                                            @click="deleteCustomer(customer)"
                                           >
                                             <TrashIcon
                                               :active="active"
@@ -117,14 +125,14 @@
                     </tr>
                 </tbody>
             </table>
-            <div v-if="!users.loading" class="flex justify-between items-center mt-5">
+            <div v-if="!customers.loading" class="flex justify-between items-center mt-5">
                 <span>
-                    Showing from {{ users.from }} to {{ users.to }} of {{ users.total }} users
+                    Showing from {{ customers.from }} to {{ customers.to }} of {{ customers.total }} customers
                 </span>
-                <nav v.if="users.total > users.limit"
+                <nav v.if="customers.total > customers.limit"
                     class="relative z-0 inline-flex justify-center rounded-md shadow-sm -space-x-px"
                     aria-label="Pagination">
-                    <a v-for="(link, i) of users.links"
+                    <a v-for="(link, i) of customers.links"
                     :key="i"
                     :disabled="!link.url"
                     aria-current="page"
@@ -137,7 +145,7 @@
                         : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50',
                         !link.url ? 'pointer-events-none opacity-50' : '',
                         i === 0 ? 'rounded-l-md' : '',
-                        i === users.links.length -1 ? 'rounded-r-md' : ''
+                        i === customers.links.length -1 ? 'rounded-r-md' : ''
                     ]"
                     v-html="link.label"
                     >
@@ -154,24 +162,24 @@ import { computed, onMounted, ref } from 'vue';
 import Spinner from '../../components/core/Spinner.vue';
 import TableHeaderCell from '../../components/core/Table/TableHeaderCell.vue';
 import store from '../../store/index.js';
-import { USERS_PER_PAGE } from '../../constants.js';
+import { CUSTOMERS_PER_PAGE } from '../../constants.js';
 import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue'
 import { EllipsisVerticalIcon, TrashIcon, PencilSquareIcon } from '@heroicons/vue/20/solid'
 
 const emit = defineEmits(['clickEdit'])
 
-const perPage = ref(USERS_PER_PAGE);
+const perPage = ref(CUSTOMERS_PER_PAGE);
 const search = ref('');
-const users = computed(() => store.state.users);
+const customers = computed(() => store.state.customers);
 const sortField = ref('updated_at');
 const sortDirection = ref('desc');
 
 onMounted(() => {
-    getUsers();
+    getCustomers();
 });
 
-function getUsers(url = null) {
-    store.dispatch('getUsers', {
+function getCustomers(url = null) {
+    store.dispatch('getCustomers', {
         url,
         sort_field: sortField.value,
         sort_direction: sortDirection.value,
@@ -184,31 +192,31 @@ function getForPage(ev, link) {
     if (!link.url || link.active) {
         return;
     };
-    getUsers(link.url);
+    getCustomers(link.url);
 }
 
-function sortUser(field) {
+function sortCustomer(field) {
     if (sortField.value === field) {
         sortDirection.value = sortDirection.value === 'asc' ? 'desc' : 'asc';
     } else {
         sortField.value = field;
         sortDirection.value = 'asc';
     }
-    getUsers();
+    getCustomers();
 }
 
-function editUser(user) {
-    emit('clickEdit', user)
+function editCustomer(customer) {
+    emit('clickEdit', customer)
 }
 
-function deleteUser(user) {
-    if (!confirm(`Are you sure you want to delete the user?`)) {
+function deleteCustomer(customer) {
+    if (!confirm(`Are you sure you want to delete the customer?`)) {
         return
     }
-    store.dispatch('deleteUser', user.id)
+    store.dispatch('deleteCustomer', customer.id)
         .then(res => {
             // TODO show notification
-            store.dispatch('getUsers')
+            store.dispatch('getCustomers')
         })
 }
 

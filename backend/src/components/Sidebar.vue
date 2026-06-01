@@ -29,6 +29,13 @@
             Users
         </span>
     </router-link>
+    <router-link :to="{ name: 'app.customers' }"
+    class="flex items-center py-2 px-3 rounded hover:bg-black/30 transition-colors duration-600 mb-2">
+        <span><UserGroupIcon class="w-5 mr-2.5"/></span>
+        <span class="text-sm">
+            Customers
+        </span>
+    </router-link>
     <router-link :to="{ name: 'app.dashboard' }"
     class="flex items-center py-2 px-3 rounded hover:bg-black/30 transition-colors duration-600 mb-2">
         <span><ChartBarSquareIcon class="w-5 mr-2.5"/></span>
@@ -40,7 +47,7 @@
 </template>
 
 <script setup>
-import {HomeIcon, SquaresPlusIcon, ShoppingCartIcon, UsersIcon, ChartBarSquareIcon } from '@heroicons/vue/24/outline'
+import {HomeIcon, SquaresPlusIcon, ShoppingCartIcon, UsersIcon, UserGroupIcon, ChartBarSquareIcon } from '@heroicons/vue/24/outline'
 </script>
 
 <style scoped>

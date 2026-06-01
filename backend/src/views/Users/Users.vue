@@ -20,10 +20,9 @@ import store from '../../store/index.js';
 
 const DEFAULT_EMPTY_OBJECT = {
     id: '',
-    title: '',
-    image: '',
-    description: '',
-    price: '',
+    name: '',
+    email: '',
+    created_at: '',
 }
 
 const showModal = ref(false);

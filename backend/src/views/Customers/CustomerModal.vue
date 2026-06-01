@@ -31,7 +31,7 @@
             >
               <header class="py-3 px-4 flex justify-between items-center">
                 <DialogTitle>
-                    {{ user.id ? `Update user: "${props.user.name}"` : 'Create new User' }}
+                    {{ customer.id ? `Update customer: "${props.customer.name}"` : 'Create new Customer' }}
                 </DialogTitle>
 
                 <button
@@ -48,9 +48,11 @@
 
               <form @submit.prevent="onSubmit">
                 <div class="bg-white px-4 pt-5 pb-4">
-                    <CustomInput class="mb-2" v-model="user.name" label="User Name" />
-                    <CustomInput class="mb-2" v-model="user.email" label="User Email" />
-                    <CustomInput type="password" class="mb-2" v-model="user.password" label="User Password" />
+                    <CustomInput class="mb-2" v-model="customer.first_name" label="First Name" />
+                    <CustomInput class="mb-2" v-model="customer.last_name" label="Last Email" />
+                    <CustomInput class="mb-2" v-model="customer.email" label="Email" />
+                    <CustomInput class="mb-2" v-model="customer.phone" label="Phone" />
+                    <CustomInput class="mb-2" v-model="customer.status" label="Status" />
                 </div>
                 <footer class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse">
                     <button type="submit"
@@ -97,16 +99,16 @@ const loading = ref(false)
 
 const props = defineProps({
     modelValue: Boolean,
-    user: {
+    customer: {
         required: true,
         type: Object
     }
 })
 
-const user = ref({
-    id: props.user.id,
-    name: props.user.name,
-    email: props.user.email,
+const customer = ref({
+    id: props.customer.id,
+    name: props.customer.name,
+    email: props.customer.email,
 })
 
 const emit = defineEmits(['update:modelValue'])
@@ -117,10 +119,11 @@ const show = computed({
 })
 
 onUpdated (() => {
-    user.value = {
-        id: props.user.id,
-        name: props.user.name,
-        email: props.user.email,
+    customer.value = {
+        id: props.customer.id,
+        name: props.customer.name,
+        email: props.customer.email,
+        description: props.customer.description,
     }
 })
 
@@ -131,23 +134,23 @@ function closeModal() {
 
 function onSubmit() {
     loading.value = true
-    if (user.value.id) {
-        store.dispatch('updateUser', user.value)
+    if (customer.value.id) {
+        store.dispatch('updateCustomer', customer.value)
             .then(response => {
                 loading.value = false;
                 if (response.status === 200) {
                     // TODO show notification
-                    store.dispatch('getUsers')
+                    store.dispatch('getCustomers')
                     closeModal()
                 }
         })
     } else {
-        store.dispatch('createUser', user.value)
+        store.dispatch('createCustomer', customer.value)
             .then(response => {
                 loading.value = false
                 if (response.status === 201) {
                     // TODO show notification
-                    store.dispatch('getUsers')
+                    store.dispatch('getCustomers')
                 closeModal()
             }
         })
