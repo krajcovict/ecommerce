@@ -35,10 +35,8 @@
                             :sort-field="sortField" :sort-direction="sortDirection">Phone</TableHeaderCell>
                         <TableHeaderCell @click="sortCustomer" class="border-b-2 p-2 text-left" field="status"
                             :sort-field="sortField" :sort-direction="sortDirection">Status</TableHeaderCell>
-
                         <TableHeaderCell @click="sortCustomer" class="border-b-2 p-2 text-left" field="created_at"
                             :sort-field="sortField" :sort-direction="sortDirection">Registration Date</TableHeaderCell>
-
                         <TableHeaderCell field="actions"></TableHeaderCell>
                     </tr>
                 </thead>

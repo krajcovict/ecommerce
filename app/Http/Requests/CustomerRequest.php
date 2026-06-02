@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\CustomerStatus;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class CustomerRequest extends FormRequest
 {
@@ -26,17 +28,18 @@ class CustomerRequest extends FormRequest
             'last_name' => ['required'],
             'phone' => ['required', 'min:7'],
             'email' => ['required', 'email'],
+            'status' => ['required', Rule::enum(CustomerStatus::class)],
 
             'shipping.address1' => ['required'],
-            //'shipping.address2' => ['required'],
+            'shipping.address2' => ['nullable'],
             'shipping.city' => ['required'],
-            //'shipping.state' => ['required'],
+            'shipping.state' => ['nullable'],
             'shipping.zipcode' => ['required'],
             'shipping.country_code' => ['required', 'exists:countries,code'],
             'billing.address1' => ['required'],
-            //'billing.address2' => ['required'],
+            'billing.address2' => ['nullable'],
             'billing.city' => ['required'],
-            //'billing.state' => ['required'],
+            'billing.state' => ['nullable'],
             'billing.zipcode' => ['required'],
             'billing.country_code' => ['required', 'exists:countries,code'],
 
