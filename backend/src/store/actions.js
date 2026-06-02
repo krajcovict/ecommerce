@@ -173,3 +173,7 @@ export function getCustomers({commit}, {url = null, search = '', perPage = 20, s
             commit('setCustomers', [false]);
         });
 };
+
+// categories:
+
+// countries:

@@ -23,11 +23,11 @@ function showCustomerModal() {
 }
 
 function editCustomer(c) {
-  store.dispatch('getCustomer', c.id)
-    .then(({data}) => {
-      customerModel.value = data;
-        showCustomerModal()
-    })
+    store.dispatch('getCustomer', c.id)
+        .then(({data}) => {
+            customerModel.value = data;
+            showCustomerModal()
+        })
 }
 
 function onModalClose() {

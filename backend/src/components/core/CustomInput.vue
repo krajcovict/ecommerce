@@ -24,6 +24,18 @@
                 :class="inputClasses"
                 :placeholder="label"/>
             </template>
+            <template v-else-if="type === 'checkbox'">
+                <input :id="id"
+                :type="type"
+                :name="name"
+                :required="required"
+                :value="props.modelValue"
+                @input="emit('update:modelValue', $event.target.value)"
+                :class="inputClasses"/>
+                <label :for="id" class="ml-2 block text-sm/6 text-gray-900">
+                  {{label}}
+                </label>
+            </template>
             <template v-else>
                 <input :type="type"
                 :name="name"
@@ -42,7 +54,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 
 const props = defineProps({
     modelValue: [String, Number, File],
@@ -52,6 +64,11 @@ const props = defineProps({
     required: Boolean,
     prepend: {type: String, default: '' },
     append: {type: String, default:''}
+})
+
+const id = computed(() => {
+    if (props.id) return props.id
+    return `id-${Math.floor(1000000 + Math.random() * 1000000)}`
 })
 
 const inputClasses = computed(() => {

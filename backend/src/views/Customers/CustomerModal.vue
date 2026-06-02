@@ -52,8 +52,7 @@
                     <CustomInput class="mb-2" v-model="customer.last_name" label="Last Name" />
                     <CustomInput class="mb-2" v-model="customer.email" label="Email" />
                     <CustomInput class="mb-2" v-model="customer.phone" label="Phone" />
-                    <CustomInput class="mb-2" v-model="customer.status" label="Status" />
-
+                    <CustomInput class="mb-2 h-4 w-4" type="checkbox" v-model="customer.status" label="Disabled" />
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div>
                             <h2 class="text-xl font-semibold mt-5 pb-2 border-b border-gray-300">Shipping Address</h2>
@@ -87,11 +86,8 @@
                     >
                         Cancel
                     </button>
-
                 </footer>
               </form>
-
-
             </DialogPanel>
           </TransitionChild>
         </div>
