@@ -51,7 +51,7 @@
                     <tr v-for="(customer, index) of customers.data" :key="customer.id">
                         <td class="border-b p-2">{{ customer.id }}</td>
                         <td class="border-b p-2 animate-fade-in-down" :style="{ animationDelay: `${index * 0.1}s` }">
-                            {{ customer.name }}
+                            {{ customer.first_name }} {{ customer.last_name }}
                         </td>
                         <td class="border-b p-2 max-w-[200px] text-pretty overflow-hidden text-ellipsis">
                             {{ customer.email }}

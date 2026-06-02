@@ -13,11 +13,7 @@ import CustomersTable from './CustomersTable.vue';
 import { ref } from 'vue';
 import store from '../../store/index.js';
 
-const DEFAULT_EMPTY_OBJECT = {
-    id: '',
-    name: '',
-    email: '',
-}
+const DEFAULT_EMPTY_OBJECT = {}
 
 const showModal = ref(false);
 const customerModel = ref({...DEFAULT_EMPTY_OBJECT});
@@ -26,9 +22,12 @@ function showCustomerModal() {
     showModal.value = true;
 }
 
-function editCustomer(customer) {
-    customerModel.value = customer
-    showCustomerModal()
+function editCustomer(c) {
+  store.dispatch('getCustomer', c.id)
+    .then(({data}) => {
+      customerModel.value = data;
+        showCustomerModal()
+    })
 }
 
 function onModalClose() {

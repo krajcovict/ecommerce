@@ -31,7 +31,7 @@
             >
               <header class="py-3 px-4 flex justify-between items-center">
                 <DialogTitle>
-                    {{ customer.id ? `Update customer: "${props.customer.name}"` : 'Create new Customer' }}
+                    {{ customer.id ? `Update customer: "${props.customer.first_name} ${props.customer.last_name}"` : 'Create new Customer' }}
                 </DialogTitle>
 
                 <button
@@ -49,10 +49,31 @@
               <form @submit.prevent="onSubmit">
                 <div class="bg-white px-4 pt-5 pb-4">
                     <CustomInput class="mb-2" v-model="customer.first_name" label="First Name" />
-                    <CustomInput class="mb-2" v-model="customer.last_name" label="Last Email" />
+                    <CustomInput class="mb-2" v-model="customer.last_name" label="Last Name" />
                     <CustomInput class="mb-2" v-model="customer.email" label="Email" />
                     <CustomInput class="mb-2" v-model="customer.phone" label="Phone" />
                     <CustomInput class="mb-2" v-model="customer.status" label="Status" />
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div>
+                            <h2 class="text-xl font-semibold mt-5 pb-2 border-b border-gray-300">Shipping Address</h2>
+                            <CustomInput class="mb-2" v-model="customer.shippingAddress.address1" label="Address 1" />
+                            <CustomInput class="mb-2" v-model="customer.shippingAddress.address2" label="Address 2" />
+                            <CustomInput class="mb-2" v-model="customer.shippingAddress.city" label="City" />
+                            <CustomInput class="mb-2" v-model="customer.shippingAddress.zipcode" label="Zip Code" />
+                            <CustomInput class="mb-2" v-model="customer.shippingAddress.country" label="Country" />
+                            <CustomInput class="mb-2" v-model="customer.shippingAddress.state" label="State" />
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-semibold mt-5 pb-2 border-b border-gray-300">Billing Address</h2>
+                            <CustomInput class="mb-2" v-model="customer.billingAddress.address1" label="Address 1" />
+                            <CustomInput class="mb-2" v-model="customer.billingAddress.address2" label="Address 2" />
+                            <CustomInput class="mb-2" v-model="customer.billingAddress.city" label="City" />
+                            <CustomInput class="mb-2" v-model="customer.billingAddress.zipcode" label="Zip Code" />
+                            <CustomInput class="mb-2" v-model="customer.billingAddress.country" label="Country" />
+                            <CustomInput class="mb-2" v-model="customer.billingAddress.state" label="State" />
+                        </div>
+                    </div>
                 </div>
                 <footer class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse">
                     <button type="submit"
@@ -105,11 +126,7 @@ const props = defineProps({
     }
 })
 
-const customer = ref({
-    id: props.customer.id,
-    name: props.customer.name,
-    email: props.customer.email,
-})
+const customer = ref({})
 
 const emit = defineEmits(['update:modelValue'])
 
@@ -121,9 +138,17 @@ const show = computed({
 onUpdated (() => {
     customer.value = {
         id: props.customer.id,
-        name: props.customer.name,
+        first_name: props.customer.first_name,
+        first_name: props.customer.last_name,
         email: props.customer.email,
-        description: props.customer.description,
+        phone: props.customer.phone,
+        status: props.customer.status,
+        shippingAddress: {
+            ...props.customer.shippingAddress
+        },
+        billingAddress: {
+            ...props.customer.billingAddress
+        },
     }
 })
 
