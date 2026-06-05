@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Enums\AddressType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CustomerRequest;
+use App\Http\Resources\CountryResource;
 use App\Http\Resources\CustomerListResource;
 use App\Http\Resources\CustomerResource;
 use App\Models\Country;
@@ -50,8 +51,8 @@ class CustomerController extends Controller
     {
         $customerData = $request->validated();
         $customerData['updated_by'] = $request->user()->id;
-        $shippingData = $customerData['shipping'];
-        $billingData = $customerData['billing'];
+        $shippingData = $customerData['shippingAddress'];
+        $billingData = $customerData['billingAddress'];
 
         $customer->update($customerData);
 
@@ -82,6 +83,6 @@ class CustomerController extends Controller
     }
 
     public function countries() {
-        return Country::query()->orderBy('name', 'asc')->get();
+        return CountryResource::collection(Country::query()->orderBy('name', 'asc')->get());
     }
 }

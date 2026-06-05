@@ -60,8 +60,9 @@
                             <CustomInput class="mb-2" v-model="customer.shippingAddress.address2" label="Address 2" />
                             <CustomInput class="mb-2" v-model="customer.shippingAddress.city" label="City" />
                             <CustomInput class="mb-2" v-model="customer.shippingAddress.zipcode" label="Zip Code" />
-                            <CustomInput type="select" :select-options="countries" class="mb-2" v-model="customer.shippingAddress.country" label="Country" />
-                            <CustomInput class="mb-2" v-model="customer.shippingAddress.state" label="State" />
+                            <CustomInput type="select" :select-options="countries" class="mb-2" v-model="customer.shippingAddress.country_code" label="Country" />
+                            <CustomInput v-if="shippingCountry && !shippingCountry.states" class="mb-2" v-model="customer.shippingAddress.state" label="State" />
+                            <CustomInput v-else type="select" :select-options="shippingStateOptions" class="mb-2" v-model="customer.shippingAddress.state" label="State" />
                         </div>
                         <div>
                             <h2 class="text-xl font-semibold mt-5 pb-2 border-b border-gray-300">Billing Address</h2>
@@ -69,8 +70,9 @@
                             <CustomInput class="mb-2" v-model="customer.billingAddress.address2" label="Address 2" />
                             <CustomInput class="mb-2" v-model="customer.billingAddress.city" label="City" />
                             <CustomInput class="mb-2" v-model="customer.billingAddress.zipcode" label="Zip Code" />
-                            <CustomInput type="select" :select-options="countries" class="mb-2" v-model="customer.billingAddress.country" label="Country" />
-                            <CustomInput class="mb-2" v-model="customer.billingAddress.state" label="State" />
+                            <CustomInput type="select" :select-options="countries" class="mb-2" v-model="customer.billingAddress.country_code" label="Country" />
+                            <CustomInput v-if="billingCountry && !billingCountry.states" class="mb-2" v-model="customer.billingAddress.state" label="State" />
+                            <CustomInput v-else type="select" :select-options="billingStateOptions" class="mb-2" v-model="customer.billingAddress.state" label="State" />
                         </div>
                     </div>
                 </div>
@@ -122,7 +124,10 @@ const props = defineProps({
     }
 })
 
-const customer = ref({})
+const customer = ref({
+  billingAddress: {},
+  shippingAddress: {}
+})
 
 const emit = defineEmits(['update:modelValue'])
 
@@ -131,13 +136,25 @@ const show = computed({
   set: (value) => emit('update:modelValue', value)
 })
 
-const countries = computed(() => store.state.countries.map(c => ({key: c.code, text:c.name})))
+const countries = computed(() => store.state.countries.map(c => ({ key: c.code, text: c.name })))
+
+const shippingCountry = computed(() => store.state.countries.find(c => c.code === customer.value.shippingAddress.country_code))
+const shippingStateOptions = computed(() => {
+    if (!shippingCountry.value || !shippingCountry.value.states) return [];
+    return Object.entries(shippingCountry.value.states).map(c => ({key: c[0], text: c[1]}))
+})
+
+const billingCountry = computed(() => store.state.countries.find(c => c.code === customer.value.billingAddress.country_code))
+const billingStateOptions = computed(() => {
+    if (!billingCountry.value || !billingCountry.value.states) return [];
+    return Object.entries(billingCountry.value.states).map(c => ({key: c[0], text: c[1]}))
+})
 
 onUpdated (() => {
     customer.value = {
         id: props.customer.id,
         first_name: props.customer.first_name,
-        first_name: props.customer.last_name,
+        last_name: props.customer.last_name,
         email: props.customer.email,
         phone: props.customer.phone,
         status: props.customer.status,
@@ -158,7 +175,7 @@ function closeModal() {
 function onSubmit() {
     loading.value = true
     if (customer.value.id) {
-    customer.value.status = !!customer.value.double // conversion to boolean
+    customer.value.status = !!customer.value.status // conversion to boolean
         store.dispatch('updateCustomer', customer.value)
             .then(response => {
                 loading.value = false;
@@ -166,6 +183,7 @@ function onSubmit() {
                     // TODO show notification
                     store.dispatch('getCustomers')
                     closeModal()
+                    //router.push({name: 'app.customers'})
                 }
         })
     } else {
