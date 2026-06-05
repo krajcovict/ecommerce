@@ -15,6 +15,18 @@
                 :placeholder="label"
                 ></textarea>
             </template>
+            <template v-else-if="type === 'select'">
+                <select :name="name"
+                :required="required"
+                :value="props.modelValue"
+                @change="emit('update:modelValue', $event.target.value)"
+                :class="inputClasses"
+                >
+                    <option v-for="option in selectOptions" :value="option.key">
+                        {{ option.text }}
+                    </option>
+                </select>
+            </template>
             <template v-else-if="type === 'file'">
                 <input :type="type"
                 :name="name"
@@ -63,7 +75,8 @@ const props = defineProps({
     name: String,
     required: Boolean,
     prepend: {type: String, default: '' },
-    append: {type: String, default:''}
+    append: { type: String, default: '' },
+    selectOptions: Array,
 })
 
 const id = computed(() => {
