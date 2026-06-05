@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Enums\AddressType;
+use App\Enums\CustomerStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CustomerRequest;
 use App\Http\Resources\CountryResource;
@@ -51,6 +52,7 @@ class CustomerController extends Controller
     {
         $customerData = $request->validated();
         $customerData['updated_by'] = $request->user()->id;
+        $customerData['status'] = $customerData['status'] ? CustomerStatus::Active->value : CustomerStatus::Disabled->value;
         $shippingData = $customerData['shippingAddress'];
         $billingData = $customerData['billingAddress'];
 

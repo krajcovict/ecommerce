@@ -41,8 +41,8 @@
                 :type="type"
                 :name="name"
                 :required="required"
-                :value="props.modelValue"
-                @input="emit('update:modelValue', $event.target.value)"
+                :checked="props.modelValue"
+                @change="emit('update:modelValue', $event.target.checked)"
                 :class="inputClasses"/>
                 <label :for="id" class="ml-2 block text-sm/6 text-gray-900">
                   {{label}}
