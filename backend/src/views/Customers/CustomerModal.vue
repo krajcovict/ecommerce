@@ -60,6 +60,11 @@
                             <CustomInput class="mb-2" v-model="customer.shippingAddress.address2" label="Address 2" />
                             <CustomInput class="mb-2" v-model="customer.shippingAddress.city" label="City" />
                             <CustomInput class="mb-2" v-model="customer.shippingAddress.zipcode" label="Zip Code" />
+
+                            <select v-model="customer.shippingAddress.country">
+                                <option v-for="country in countries" :value="country.code">{{ country.name }}</option>
+                            </select>
+
                             <CustomInput class="mb-2" v-model="customer.shippingAddress.country" label="Country" />
                             <CustomInput class="mb-2" v-model="customer.shippingAddress.state" label="State" />
                         </div>
@@ -69,6 +74,11 @@
                             <CustomInput class="mb-2" v-model="customer.billingAddress.address2" label="Address 2" />
                             <CustomInput class="mb-2" v-model="customer.billingAddress.city" label="City" />
                             <CustomInput class="mb-2" v-model="customer.billingAddress.zipcode" label="Zip Code" />
+
+                            <select v-model="customer.billingAddress.country">
+                                <option v-for="country in countries" :value="country.code">{{ country.name }}</option>
+                            </select>
+
                             <CustomInput class="mb-2" v-model="customer.billingAddress.country" label="Country" />
                             <CustomInput class="mb-2" v-model="customer.billingAddress.state" label="State" />
                         </div>
@@ -131,6 +141,8 @@ const show = computed({
   set: (value) => emit('update:modelValue', value)
 })
 
+const countries = computed(() => store.state.countries)
+
 onUpdated (() => {
     customer.value = {
         id: props.customer.id,
@@ -156,6 +168,7 @@ function closeModal() {
 function onSubmit() {
     loading.value = true
     if (customer.value.id) {
+    customer.value.status = !!customer.value.double // conversion to boolean
         store.dispatch('updateCustomer', customer.value)
             .then(response => {
                 loading.value = false;

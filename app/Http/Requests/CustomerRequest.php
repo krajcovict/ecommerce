@@ -28,7 +28,7 @@ class CustomerRequest extends FormRequest
             'last_name' => ['required'],
             'phone' => ['required', 'min:7'],
             'email' => ['required', 'email'],
-            'status' => ['required', Rule::enum(CustomerStatus::class)],
+            'status' => ['required', 'boolean'], //, Rule::enum(CustomerStatus::class)
 
             'shipping.address1' => ['required'],
             'shipping.address2' => ['nullable'],

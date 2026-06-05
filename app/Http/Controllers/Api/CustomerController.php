@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CustomerRequest;
 use App\Http\Resources\CustomerListResource;
 use App\Http\Resources\CustomerResource;
+use App\Models\Country;
 use App\Models\Customer;
 use App\Models\CustomerAddress;
 
@@ -78,5 +79,9 @@ class CustomerController extends Controller
     {
         $customer->delete();
         return response()->noContent();
+    }
+
+    public function countries() {
+        return Country::query()->orderBy('name', 'asc')->get();
     }
 }

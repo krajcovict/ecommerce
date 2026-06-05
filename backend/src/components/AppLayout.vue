@@ -36,6 +36,7 @@ function toggleSidebar() {
 }
 onMounted(() => {
     store.dispatch('getCurrentUser');
+    store.dispatch('getCountries');
     handleResize();
     window.addEventListener('resize', handleResize);
 });

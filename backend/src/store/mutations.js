@@ -82,3 +82,7 @@ export function hideToast(state) {
     state.toast.show = false;
     state.toast.message = '';
 };
+
+export function setCountries(state, countries) {
+    state.countries = countries;
+}
