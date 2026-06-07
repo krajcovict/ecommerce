@@ -40,10 +40,17 @@
                         <TableHeaderCell field="actions"></TableHeaderCell>
                     </tr>
                 </thead>
-                <tbody v-if="customers.loading || !customers.data.length">
+                <tbody v-if="customers.loading">
                     <tr>
                         <td colspan="7">
                             <Spinner class="my-4 w-full"/>
+                        </td>
+                    </tr>
+                </tbody>
+                <tbody v-else-if="!customers.data.length">
+                    <tr>
+                        <td colspan="7">
+                            <p class="text-center py-8">There are no customers.</p>
                         </td>
                     </tr>
                 </tbody>

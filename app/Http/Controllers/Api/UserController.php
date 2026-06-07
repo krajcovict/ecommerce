@@ -28,8 +28,9 @@ class UserController extends Controller
         $query = User::query();
         $query->orderBy($sortField, $sortDirection);
         if ($search) {
-            $query->where('title', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%");
+            $query->where('name', 'like', "%{$search}%")
+                ->orWhere('email', 'like', "%{$search}%")
+                ->orWhere('created_at', 'like', "%{$search}%");
         }
 
         return UserResource::collection(

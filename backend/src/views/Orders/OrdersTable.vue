@@ -42,7 +42,8 @@
                 <tbody v-if="orders.loading || !orders.data.length">
                     <tr>
                         <td colspan="6">
-                            <Spinner class="my-4 w-full"/>
+                            <Spinner v-if="orders.loading" class="my-4 w-full"/>
+                            <p class="text-center" v-else>No matches found.</p>
                         </td>
                     </tr>
                 </tbody>
