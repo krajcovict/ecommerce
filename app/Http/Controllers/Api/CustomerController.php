@@ -44,14 +44,12 @@ class CustomerController extends Controller
             ->orderBy($sortColumn, $sortDirection);
 
         if ($search) {
-            $query->where(function ($q) use ($search) {
-                $q->where(DB::raw("CONCAT(customers.first_name, ' ', customers.last_name)"), 'like', "%{$search}%")
-                    ->orWhere('customers.user_id', 'like', "%{$search}%")
-                    ->orWhere('users.email', 'like', "%{$search}%")
-                    ->orWhere('customers.phone', 'like', "%{$search}%")
-                    ->orWhere('customers.status', 'like', "%{$search}%")
-                    ->orWhere('customers.created_at', 'like', "%{$search}%");
-            });
+            $query->where(DB::raw("CONCAT(customers.first_name, ' ', customers.last_name)"), 'like', "%{$search}%")
+                ->orWhere('customers.user_id', 'like', "%{$search}%")
+                ->orWhere('users.email', 'like', "%{$search}%")
+                ->orWhere('customers.phone', 'like', "%{$search}%")
+                ->orWhere('customers.status', 'like', "%{$search}%")
+                ->orWhere('customers.created_at', 'like', "%{$search}%");
         }
 
         return CustomerListResource::collection(
