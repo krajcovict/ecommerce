@@ -24,19 +24,34 @@ class CustomerController extends Controller
         $search = request('search', false);
         $perPage = request('per_page', 20);
         $sortField = request('sort_field', 'created_at');
-        $sortDirection = request('sort_direction', 'desc');
+        $sortDirection = strtolower(request('sort_direction', 'desc')) === 'asc' ? 'asc' : 'desc';
+
+        $sortableFields = [
+            'id' => 'customers.user_id',
+            'name' => 'customers.first_name',
+            'email' => 'users.email',
+            'phone' => 'customers.phone',
+            'status' => 'customers.status',
+            'created_at' => 'customers.created_at',
+            'updated_at' => 'customers.updated_at',
+        ];
+
+        $sortColumn = $sortableFields[$sortField] ?? 'customers.created_at';
 
         $query = Customer::query()
-            ->with('user')
-            ->orderBy("customers.$sortField", $sortDirection);
+            ->leftJoin('users', 'customers.user_id', '=', 'users.id')
+            ->select('customers.*')
+            ->orderBy($sortColumn, $sortDirection);
 
         if ($search) {
-            $query->where(DB::raw("CONCAT(first_name, ' ', last_name)"), 'like', "%{$search}%")
-                ->join('users', 'customers.user_id', '=', 'users.id')
-                ->orWhere('users.email', 'like', "%{$search}%")
-                ->orWhere('customers.phone', 'like', "%{$search}%")
-                ->orWhere('customers.status', 'like', "%{$search}%")
-                ->orWhere('customers.created_at', 'like', "%{$search}%");
+            $query->where(function ($q) use ($search) {
+                $q->where(DB::raw("CONCAT(customers.first_name, ' ', customers.last_name)"), 'like', "%{$search}%")
+                    ->orWhere('customers.user_id', 'like', "%{$search}%")
+                    ->orWhere('users.email', 'like', "%{$search}%")
+                    ->orWhere('customers.phone', 'like', "%{$search}%")
+                    ->orWhere('customers.status', 'like', "%{$search}%")
+                    ->orWhere('customers.created_at', 'like', "%{$search}%");
+            });
         }
 
         return CustomerListResource::collection(
