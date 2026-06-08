@@ -137,6 +137,10 @@ export function createUser({commit}, user) {
     return axiosClient.post('/users', user)
 }
 
+export function deleteUser({ commit }, user) {
+    return axiosClient.delete(`/users/${user.id}`)
+}
+
 // customers:
 
 export function getCustomer({commit}, id) {
