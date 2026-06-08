@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Enums\CustomerStatus;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
@@ -47,6 +48,21 @@ class LoginRequest extends FormRequest
 
             throw ValidationException::withMessages([
                 'email' => trans('auth.failed'),
+            ]);
+        }
+
+        /**
+         * Logout if customer is disabled by admin (not active).
+         * @var mixed
+         */
+        $user = $this->user();
+        $customer = $user->customer;
+        if ($customer->status !== CustomerStatus::Active->value) {
+            Auth::guard('web')->logout();
+            $this->session()->invalidate();
+            $this->session()->regenerateToken();
+            throw ValidationException::withMessages([
+                'email' => 'Your account has been disabled.',
             ]);
         }
 
