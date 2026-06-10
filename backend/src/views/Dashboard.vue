@@ -18,17 +18,14 @@
             <span class="text-2xl font-semibold">$28,003,562</span>
         </div>
     </div>
+    <div>
+        <DoughnutChart />
+    </div>
 </template>
 
-<script>
-export default {
-    name: 'Login',
-    data() {
-        return {
+<script setup>
+import DoughnutChart from '../components/core/Charts/Doughnut.vue';
 
-        }
-    }
-}
 </script>
 
 <style scoped>
