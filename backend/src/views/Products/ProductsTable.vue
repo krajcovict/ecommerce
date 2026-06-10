@@ -52,7 +52,7 @@
                         <td class="border-b p-2 animate-fade-in-down" :style="{ animationDelay: `${index * 0.1}s` }">
                             <img class="w-16" :src="product.image_url" :alt="product.title">
                         </td>
-                        <td class="border-b p-2 max-w-[200px] text-pretty overflow-hidden text-ellipsis">
+                        <td class="border-b p-2 max-w-50 text-pretty overflow-hidden text-ellipsis">
                             {{ product.title }}
                         </td>
                         <td class="border-b p-2">{{ product.price }}</td>
