@@ -43,16 +43,12 @@ export default defineComponent({
       type: Array,
       default: () => []
     },
-
+      data: {
+        type: Object,
+        required: true
+    }
   },
     setup(props) {
-        const chartData = {
-            labels: ['VueJs', 'EmberJs', 'ReactJs', 'AngularJs'],
-            datasets: [{
-                backgroundColor: ['#41B883', '#E46651', '#00D8FF', '#DD1B16'],
-                data: [40, 20, 80, 10]
-            }]
-        }
 
         const chartOptions = {
           responsive: true,
@@ -61,7 +57,7 @@ export default defineComponent({
 
     return () =>
       h(Doughnut, {
-        data: chartData,
+        data: props.data,
         options: chartOptions,
         chartId: props.chartId,
         width: props.width,

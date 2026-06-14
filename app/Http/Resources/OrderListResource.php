@@ -14,6 +14,9 @@ class OrderListResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $user = $this->user;
+        $customer = $user?->customer;
+
         return [
             'id' => $this->id,
             'status' => $this->status,
@@ -21,9 +24,9 @@ class OrderListResource extends JsonResource
             'number_of_items' => $this->items()->count(),
 
             'customer' => [
-                'id' => $this->user->id,
-                'first_name' => $this->user->customer->first_name,
-                'last_name' => $this->user->customer->last_name,
+                'id' => $user?->id,
+                'first_name' => $customer?->first_name,
+                'last_name' => $customer?->last_name,
             ],
 
             'created_at' => (new \DateTime($this->created_at))
