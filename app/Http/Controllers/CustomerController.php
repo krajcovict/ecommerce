@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\AddressType;
+use App\Enums\CustomerStatus;
 use App\Http\Requests\CustomerRequest;
 use App\Models\Country;
 use App\Models\CustomerAddress;
@@ -30,8 +31,8 @@ class CustomerController extends Controller
     public function store(CustomerRequest $request)
     {
         $customerData = $request->validated();
-        $shippingData = $customerData['shipping'];
-        $billingData = $customerData['billing'];
+        $shippingData = $customerData['shippingAddress'];
+        $billingData = $customerData['billingAddress'];
 
         /** @var \App\Models\User $user */
         $user = $request->user();
