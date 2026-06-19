@@ -32,12 +32,23 @@
     </div>
     <div class="grid grid-rows-1 md:grid-rows-2 md:grid-flow-col grid-cols-1 md:grid-cols-3 gap-3 py-3">
         <div class="md:col-span-2 md:row-span-2 bg-white p-5 rounded-lg border border-gray-400 shadow-lg flex flex-col items-center">
-            <label class="font-semibold">Orders</label>
-            <span>Lorem ipsum dolor sit amet consectetur adipisicing elit. Porro reprehenderit quod nostrum aut? Iusto fuga iure dolore ea esse placeat, veritatis laborum modi omnis quos, sunt, ipsum deleniti dolorum dolorem.</span>
+            <label class="font-semibold">Latest Paid Orders</label>
+            <template v-if="!loading.latestOrders">
+                <router-link :to="{ name: 'app.orders.view', params: {id: o.id} }" v-for="o of latestOrders" :key="o.id" class="py-2 px-3 border border-gray-300 rounded m-1 w-full hover:bg-gray-200">
+
+
+                    <p>Order <b>#{{ o.id }}</b> contains {{ o.items }} items - ${{ o.total_price }}</p>
+
+                    <p class="flex justify-between"><span>{{ o.first_name }} {{ o.last_name }}</span><span>{{ o.created_at }}</span></p>
+
+
+                </router-link>
+            </template>
+            <Spinner v-else/>
         </div>
         <div class="bg-white p-5 rounded-lg border border-gray-400 shadow-lg flex flex-col items-center">
+            <label class="font-semibold">Orders By Country</label>
             <template v-if="!loading.ordersByCountry">
-                <label class="font-semibold">Orders By Country</label>
                 <div>
                     <DoughnutChart :width="140" :height="200" :data="ordersByCountry" />
                 </div>
@@ -46,13 +57,16 @@
         </div>
         <div class="bg-white p-5 rounded-lg border border-gray-400 shadow-lg flex flex-col items-center">
             <label class="font-semibold">Latest Customers</label>
-            <router-link to="/" v-for="c of latestCustomers" :key="c.id" class="flex border border-gray-300 rounded p-3 m-1 w-full hover:bg-gray-200">
-                <UserIcon class="w-4" />
-                <div class="pl-3">
-                    <h3>{{ c.first_name }} {{ c.last_name }}</h3>
-                    <p>{{ c.email }}</p>
-                </div>
-            </router-link>
+            <template v-if="!loading.latestCustomers">
+                <router-link to="/" v-for="c of latestCustomers" :key="c.id" class="flex border border-gray-300 rounded py-2 px-3 m-1 w-full hover:bg-gray-200">
+                    <UserIcon class="w-4" />
+                    <div class="pl-3">
+                        <h3>{{ c.first_name }} {{ c.last_name }}</h3>
+                        <p>{{ c.email }}</p>
+                    </div>
+                </router-link>
+            </template>
+            <Spinner v-else/>
         </div>
     </div>
 </template>
@@ -69,6 +83,7 @@ const loading = ref({
     productsCount: true,
     paidOrders: true,
     totalIncome: true,
+    latestOrders: true,
     ordersByCountry: true,
     latestCustomers: true,
 })
@@ -77,6 +92,7 @@ const customersCount = ref(0);
 const productsCount = ref(0);
 const paidOrders = ref(0);
 const totalIncome = ref(0);
+const latestOrders = ref([]);
 const ordersByCountry = ref([]);
 const latestCustomers = ref([]);
 
@@ -97,6 +113,10 @@ axiosClient.get(`/dashboard/income-amount`).then(({data}) => {
         new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", roundingMode: "halfCeil", maximumFractionDigits: 0 })
             .format(data,),
     loading.value.totalIncome = false
+});
+axiosClient.get(`/dashboard/latest-orders`).then(({ data: orders }) => {
+    latestOrders.value = orders.data
+    loading.value.latestOrders = false
 });
 axiosClient.get(`/dashboard/orders-by-country`).then(({ data: countries }) => {
     const chartData = {

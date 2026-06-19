@@ -30,6 +30,7 @@ Route::middleware(['auth:sanctum', 'admin'])
         Route::get('/dashboard/products-count', [DashboardController::class, 'activeProducts']);
         Route::get('/dashboard/orders-count', [DashboardController::class, 'paidOrders']);
         Route::get('/dashboard/income-amount', [DashboardController::class, 'totalIncome']);
+        Route::get('/dashboard/latest-orders', [DashboardController::class, 'latestOrders']);
         Route::get('/dashboard/orders-by-country', [DashboardController::class, 'ordersByCountry']);
         Route::get('/dashboard/latest-customers', [DashboardController::class, 'latestCustomers']);
     });
