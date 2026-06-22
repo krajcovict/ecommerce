@@ -2,13 +2,11 @@
     <div class="flex items-center justify-between mb-3">
         <h1 class="text-3xl font-semibold">Customers</h1>
     </div>
-    <CustomerModal v-model="showModal" :customer="customerModel" @close="onModalClose" />
     <CustomersTable @clickEdit="editCustomer" />
 
 </template>
 
 <script setup>
-import CustomerModal from './CustomerModal.vue';
 import CustomersTable from './CustomersTable.vue';
 import { ref } from 'vue';
 import store from '../../store/index.js';

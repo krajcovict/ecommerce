@@ -30,18 +30,13 @@
             <Spinner v-else/>
         </div>
     </div>
-    <div class="grid grid-rows-1 md:grid-rows-2 md:grid-flow-col grid-cols-1 md:grid-cols-3 gap-3 py-3">
+    <div class="grid grid-rows-1 lg:grid-rows-2 lg:grid-flow-col grid-cols-1 lg:grid-cols-3 gap-3 py-3">
         <div class="md:col-span-2 md:row-span-2 bg-white p-5 rounded-lg border border-gray-400 shadow-lg flex flex-col items-center">
             <label class="font-semibold">Latest Paid Orders</label>
             <template v-if="!loading.latestOrders">
                 <router-link :to="{ name: 'app.orders.view', params: {id: o.id} }" v-for="o of latestOrders" :key="o.id" class="py-2 px-3 border border-gray-300 rounded m-1 w-full hover:bg-gray-200">
-
-
                     <p>Order <b>#{{ o.id }}</b> contains {{ o.items }} items - ${{ o.total_price }}</p>
-
                     <p class="flex justify-between"><span>{{ o.first_name }} {{ o.last_name }}</span><span>{{ o.created_at }}</span></p>
-
-
                 </router-link>
             </template>
             <Spinner v-else/>
@@ -58,7 +53,7 @@
         <div class="bg-white p-5 rounded-lg border border-gray-400 shadow-lg flex flex-col items-center">
             <label class="font-semibold">Latest Customers</label>
             <template v-if="!loading.latestCustomers">
-                <router-link to="/" v-for="c of latestCustomers" :key="c.id" class="flex border border-gray-300 rounded py-2 px-3 m-1 w-full hover:bg-gray-200">
+                <router-link :to="{name: 'app.customers.view', params: {id: c.id}}" v-for="c of latestCustomers" :key="c.id" class="flex border border-gray-300 rounded py-2 px-3 m-1 w-full hover:bg-gray-200 items-center">
                     <UserIcon class="w-4" />
                     <div class="pl-3">
                         <h3>{{ c.first_name }} {{ c.last_name }}</h3>
