@@ -10,7 +10,7 @@ use App\Http\Resources\Dashboard\OrderResource;
 use App\Models\Customer;
 use App\Models\Order;
 use App\Models\Product;
-use Illuminate\Http\Request;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
@@ -28,17 +28,28 @@ class DashboardController extends Controller
 
     public function paidOrders()
     {
-        return Order::where('status', OrderStatus::Paid->value)->count();
+        $fromDate = $this->getFromDate();
+        $query = Order::query()->where('status', OrderStatus::Paid->value);
+        if ($fromDate) {
+            $query->where('created_at', '>', $fromDate);
+        }
+        return $query->count();
     }
 
     public function totalIncome()
     {
-        return Order::where('status', OrderStatus::Paid->value)->sum('total_price');
+        $fromDate = $this->getFromDate();
+        $query = Order::query()->where('status', OrderStatus::Paid->value);;
+        if ($fromDate) {
+            $query->where('created_at', '>', $fromDate);
+        }
+        return $query->sum('total_price');
     }
 
     public function ordersByCountry()
     {
-        $orders = Order::query()    // customer_addresses AS a
+        $fromDate = $this->getFromDate();
+        $query = Order::query()    // customer_addresses AS a
         ->select(['c.name', DB::raw('count(orders.id) as count')])
         ->join('users', 'created_by', '=', 'users.id')
         ->join('customer_addresses AS a', 'users.id', '=', 'a.customer_id')
@@ -48,7 +59,11 @@ class DashboardController extends Controller
         ->groupBy('c.name')
         ;
 
-        return $orders->get();
+        if ($fromDate) {
+            $query->where('orders.created_at', '>', $fromDate);
+        }
+
+        return $query->get();
     }
 
     public function latestCustomers()
@@ -84,5 +99,20 @@ class DashboardController extends Controller
                 ->limit(10)->get()
 
         );
+    }
+
+    private function getFromDate()
+    {
+        $request = \request();
+        $paramDate = $request->get('d');
+        $array = [
+            '1d' => Carbon::now()->subDays(1),
+            '1w' => Carbon::now()->subDays(7),
+            '2w' => Carbon::now()->subDays(14),
+            '1m' => Carbon::now()->subDays(30),
+            '3m' => Carbon::now()->subDays(90),
+            '6m' => Carbon::now()->subDays(180),
+        ];
+        return $array[$paramDate] ?? null; // otherwise it's All Time
     }
 }
