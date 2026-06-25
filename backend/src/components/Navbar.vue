@@ -6,7 +6,7 @@
       @click="emit('toggle-sidebar')">
         <Bars4Icon class="w-5"/>
       </button>
-      <Menu as="div" class="px-4 justify-center">
+      <Menu as="div" class="px-4 justify-center z-50">
           <div>
             <MenuButton class="flex items-center justify-center">
               <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="user avatar"

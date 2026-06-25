@@ -12,12 +12,20 @@ import RequestPassword from '../views/RequestPassword.vue';
 import ResetPassword from '../views/ResetPassword.vue';
 import store from "../store";
 import NotFound from '../views/NotFound.vue';
+import CustomersReport from "../views/Reports/CustomersReport.vue";
+import OrdersReport from "../views/Reports/OrdersReport.vue";
+import Report from "../views/Reports/Report.vue";
 // TODO: Implement dynamic imports;
 
 const routes = [
     {
+    path: '/',
+    redirect: '/app/dashboard'
+    },
+    {
         path: '/app',
         name: 'app',
+        redirect: '/app/dashboard',
         component: AppLayout,
         meta: { requiresAuth: true },
         children: [
@@ -55,6 +63,26 @@ const routes = [
                 path: 'customers/:id',
                 name: 'app.customers.view',
                 component: CustomerView
+            },
+            {
+            path: '/report',
+            name: 'reports',
+            component: Report,
+            meta: {
+                requiresAuth: true,
+                },
+            children: [
+                {
+                    path: '/orders',
+                    name: 'reports.orders',
+                    component: OrdersReport
+                },
+                {
+                    path: 'customers',
+                    name: 'reports.customers',
+                    component: CustomersReport
+                },
+                ]
             },
         ],
     },

@@ -36,7 +36,7 @@
             Customers
         </span>
     </router-link>
-    <router-link :to="{ name: 'app.dashboard' }"
+    <router-link :to="{ name: 'reports.orders' }"
     class="flex items-center py-2 px-3 rounded hover:bg-black/30 transition-colors duration-600 mb-2">
         <span><ChartBarSquareIcon class="w-5 mr-2.5"/></span>
         <span class="text-sm">
