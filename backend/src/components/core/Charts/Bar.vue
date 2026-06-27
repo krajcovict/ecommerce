@@ -27,7 +27,7 @@ export default defineComponent({
     },
     height: {
       type: Number,
-      default: 400
+      default: 300
     },
     cssClasses: {
       default: '',
@@ -54,8 +54,8 @@ export default defineComponent({
 
     return () =>
       h(Bar, {
-        chartData: props.data,
-        chartOptions,
+        data: props.data,
+        options: chartOptions,
         chartId: props.chartId,
         width: props.width,
         height: props.height,
