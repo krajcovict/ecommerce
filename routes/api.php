@@ -6,9 +6,8 @@ use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\UserController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\ReportController;
 use Illuminate\Support\Facades\Route;
-
 
 Route::middleware(['auth:sanctum', 'admin'])
     ->group(function () {
@@ -33,6 +32,10 @@ Route::middleware(['auth:sanctum', 'admin'])
         Route::get('/dashboard/latest-orders', [DashboardController::class, 'latestOrders']);
         Route::get('/dashboard/orders-by-country', [DashboardController::class, 'ordersByCountry']);
         Route::get('/dashboard/latest-customers', [DashboardController::class, 'latestCustomers']);
+
+        // Report routes:
+        Route::get('/report/orders', [ReportController::class, 'orders']);
+        Route::get('/report/customers', [ReportController::class, 'customers']);
     });
 
 Route::post('/login', [AuthController::class, 'login']);

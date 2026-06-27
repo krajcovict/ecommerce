@@ -10,11 +10,14 @@ use App\Http\Resources\Dashboard\OrderResource;
 use App\Models\Customer;
 use App\Models\Order;
 use App\Models\Product;
+use App\Traits\ReportTrait;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
+    use ReportTrait;
+
     public function activeCustomers()
     {
         return Customer::where('status', CustomerStatus::Active->value)->count();
@@ -100,18 +103,4 @@ class DashboardController extends Controller
         );
     }
 
-    private function getFromDate()
-    {
-        $request = \request();
-        $paramDate = $request->get('d');
-        $array = [
-            '1d' => Carbon::now()->subDays(1),
-            '1w' => Carbon::now()->subDays(7),
-            '2w' => Carbon::now()->subDays(14),
-            '1m' => Carbon::now()->subDays(30),
-            '3m' => Carbon::now()->subDays(90),
-            '6m' => Carbon::now()->subDays(180),
-        ];
-        return $array[$paramDate] ?? null; // otherwise it's All Time
-    }
 }
