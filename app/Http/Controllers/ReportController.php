@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Customer;
 use App\Models\Order;
 use App\Traits\ReportTrait;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 
 class ReportController extends Controller
@@ -14,47 +14,47 @@ class ReportController extends Controller
 
     public function orders()
     {
-        $fromDate = $this->getFromDate() ?: Carbon::now()->subYear(1);
-        $query = Order::query()
-            ->select([DB::raw('CAST(created_at as DATE) AS day'), DB::raw('COUNT(id) as count')])
+        $query = Order::query();
+
+        return $this->prepareDataForChart($query, 'Orders By Day');
+    }
+
+    public function customers()
+    {
+        $query = Customer::query();
+
+        return $this->prepareDataForChart($query, 'Customers By Day');
+    }
+
+    private function prepareDataForChart($query, $label)
+    {
+        $fromDate = $this->getFromDate() ?: Carbon::now()->subDay(30);
+        $query
+            ->select([DB::raw('CAST(created_at as DATE) AS day'), DB::raw('COUNT(created_at) AS count')])
             ->groupBy(DB::raw('CAST(created_at as DATE)'));
         if ($fromDate) {
             $query->where('created_at', '>', $fromDate);
         }
-
-        $orders = $query->get()->keyBy('day');
+        $records = $query->get()->keyBy('day');
 
         // Process for chartjs
         $days = [];
         $labels = [];
         $now = Carbon::now();
         while ($fromDate < $now) {
-            $label = $fromDate->format('Y-m-d');
-            $labels[] = $label;
+            $key = $fromDate->format('Y-m-d');
+            $labels[] = $key;
             $fromDate = $fromDate->addDay(1);
-            $days[] = isset($orders[$label]) ? $orders[$label]['count'] : 0; // or zero orders that day
+            $days[] = isset($records[$key]) ? $records[$key]['count'] : 0;
         }
 
         return [
             'labels' => $labels,
             'datasets' => [[
-                'label' => 'Number of Orders',
-                'backgroundColor' => '#f87979',
-                'data' => $days,
-                ]]
+                'label' => $label,
+                'backgroundColor' => '#7B00FF',
+                'data' => $days
+            ]]
         ];
-
-
-    }
-
-    public function customers()
-    {
-
-    }
-
-    private function fillGaps(Collection|array $orders)
-    {
-        // TODO
-        return $orders;
     }
 }
