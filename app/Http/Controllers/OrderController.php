@@ -15,8 +15,12 @@ class OrderController extends Controller
          */
         $user = $request->user();
 
-        $orders = Order::query()->where('created_by', $user->id)->orderByDesc('created_at')->paginate(10);
-    return view('order.index', compact('orders'));
+        $orders = Order::withCount('items')
+            ->where('created_by', $user->id)
+            ->orderByDesc('created_at')
+            ->paginate(20);
+
+        return view('order.index', compact('orders'));
     }
 
     public function view(Order $order)

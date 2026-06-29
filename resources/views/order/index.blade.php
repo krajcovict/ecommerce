@@ -45,7 +45,7 @@
                   </small>
                 </td>
                 <td>${{ number_format($order->total_price, 2) }}</td>
-                <td>{{ $order->items->count() }}</td>
+                <td>{{ $order->items_count }}</td>
                 <td class="flex gap-3">
                   <div x-data="{open: false}">
                     <button

@@ -42,7 +42,7 @@
           <!-- Order Items -->
           <div>
             <!-- Order Item -->
-              @foreach ($order->items as $item)
+              @foreach ($order->items()->with('product')->get() as $item)
                 <div class="flex gap-6 pb-2">
                   <a href="{{ route('product.view', $item->product) }}"
                     class="w-16 h-16 flex items-center justify-center overflow-hidden border border-gray-300">
