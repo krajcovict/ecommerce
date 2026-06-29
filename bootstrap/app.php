@@ -17,7 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin' => \App\Http\Middleware\Admin::class,
             'guestOrVerified' => GuestOrVerified::class,
         ]);
-        $middleware->validateCsrfTokens(
+        $middleware->preventRequestForgery(
             except: ['webhook/stripe']
         );
     })
