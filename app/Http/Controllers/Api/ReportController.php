@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Models\Customer;
 use App\Models\Order;
 use App\Traits\ReportTrait;
@@ -28,7 +29,7 @@ class ReportController extends Controller
 
     private function prepareDataForChart($query, $label)
     {
-        $fromDate = $this->getFromDate() ?: Carbon::now()->subDay(30);
+        $fromDate = $this->getFromDate() ?: Carbon::now()->subYear(1);
         $query
             ->select([DB::raw('CAST(created_at as DATE) AS day'), DB::raw('COUNT(created_at) AS count')])
             ->groupBy(DB::raw('CAST(created_at as DATE)'));

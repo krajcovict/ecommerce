@@ -134,7 +134,6 @@ onUpdated (() => {
 
 function closeModal() {
     show.value = false
-    emit('close')
 }
 
 function onSubmit() {

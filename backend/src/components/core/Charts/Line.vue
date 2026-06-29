@@ -50,7 +50,10 @@ export default defineComponent({
         }
     },
     setup(props) {
-        const chartOptions = {responsive: true}
+        const chartOptions = {
+            responsive: true,
+            maintainAspectRatio: false
+        }
 
         return () =>
           h(Line, {

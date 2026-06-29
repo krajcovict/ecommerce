@@ -78,7 +78,8 @@ import axiosClient from '../axios.js';
 import CustomInput from '../components/core/CustomInput.vue';
 import DoughnutChart from '../components/core/Charts/Doughnut.vue';
 import { UserIcon } from '@heroicons/vue/24/solid';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
+import store from '../store/index.js';
 
 const loading = ref({
     customersCount: true,
@@ -90,15 +91,7 @@ const loading = ref({
     latestCustomers: true,
 })
 
-const dateOptions = ref([
-    { key: '1d', text: 'Last Day' },
-    { key: '1w', text: 'Last Week' },
-    { key: '2w', text: 'Last 2 Weeks' },
-    { key: '1m', text: 'Last Month' },
-    { key: '3m', text: 'Last 3 Months' },
-    { key: '6m', text: 'Last 6 Months' },
-    { key: 'all', text: 'All Time' },
-])
+const dateOptions = computed(() => store.state.dateOptions)
 const chosenDate = ref('all');
 
 const customersCount = ref(0);

@@ -55,7 +55,8 @@ export function createProduct({commit}, product) {
         const form = new FormData();
         form.append('title', product.title);
         form.append('image', product.image);
-        form.append('description', product.description);
+        form.append('description', product.description || '');
+        form.append('published', product.published ? 1 : 0);
         form.append('price', product.price);
         product = form;
     }
@@ -70,6 +71,7 @@ export function updateProduct({commit}, product) {
         form.append('title', product.title);
         form.append('image', product.image);
         form.append('description', product.description);
+        form.append('published', product.published ? 1 : 0);
         form.append('price', product.price);
         form.append('_method', 'PUT');
         product = form;
