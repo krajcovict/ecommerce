@@ -39,8 +39,7 @@ class CustomerController extends Controller
         $sortColumn = $sortableFields[$sortField] ?? 'customers.created_at';
 
         $query = Customer::query()
-            ->leftJoin('users', 'customers.user_id', '=', 'users.id')
-            ->select('customers.*')
+            ->with('user')
             ->orderBy($sortColumn, $sortDirection);
 
         if ($search) {

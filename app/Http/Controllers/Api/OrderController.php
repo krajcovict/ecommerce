@@ -8,7 +8,6 @@ use App\Http\Resources\OrderResource;
 use App\Mail\OrderUpdateEmail;
 use App\Models\Order;
 use App\Http\Resources\OrderListResource;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
 class OrderController extends Controller
@@ -21,8 +20,10 @@ class OrderController extends Controller
         $sortField = request('sort_field', 'updated_at');
         $sortDirection = request('sort_direction', 'desc');
 
-        $query = Order::query();
-        $query->orderBy($sortField, $sortDirection);
+        $query = Order::query()
+            ->withCount('items')
+            ->with('user.customer')
+            ->orderBy($sortField, $sortDirection);
         if ($search) {
             $query->where('id', 'like', "%{$search}%")
                   ->orWhere('total_price', 'like', "%{$search}%");
@@ -35,6 +36,7 @@ class OrderController extends Controller
 
     public function view(Order $order)
     {
+        $order->load('items.product');
         return new OrderResource($order);
 
     }
