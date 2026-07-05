@@ -57,6 +57,6 @@ class RegisteredUserController extends Controller
 
         Cart::moveCartItemsIntoDb();
 
-        return redirect(route('dashboard', absolute: false));
+        return redirect(route('verification.notice', absolute: false));
     }
 }
