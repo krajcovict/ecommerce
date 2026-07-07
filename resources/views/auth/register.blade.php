@@ -14,6 +14,12 @@
           >
         </p>
 
+        @if (session('error'))
+            <div class="bg-red-500 rounded py-2 px-3 mb-3 text-white">
+                {{ session('error') }}
+            </div>
+        @endif
+
         <!-- Name -->
         <div>
             <x-input-label for="name" :value="__('Name')" />

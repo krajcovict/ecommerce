@@ -12,6 +12,7 @@ use App\Models\OrderItem;
 use App\Models\Payment;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -29,7 +30,7 @@ class CheckoutController extends Controller
         $lineItems = [];
         $orderItems = [];
         $totalPrice = 0;
-    // TODO: Repair Stripe checkout with 'noimage' item
+// TODO: Repair Stripe checkout with 'noimage' item
         foreach ($products as $product) {
             $quantity = $cartItems[$product->id]['quantity'];
             $totalPrice += $product->price * $quantity;
@@ -59,33 +60,40 @@ class CheckoutController extends Controller
               'cancel_url' => route('checkout.failure', [], true),
             ]);
 
-        // Create Order in our database
-        $orderData = [
-            'total_price' => $totalPrice,
-            'status' => OrderStatus::Unpaid,
-            'created_by' => $user->id,
-            'updated_by' => $user->id,
-        ];
-        $order = Order::create($orderData);
+        DB::beginTransaction();
+        try {
+            // Create Order in our database
+            $orderData = [
+                'total_price' => $totalPrice,
+                'status' => OrderStatus::Unpaid,
+                'created_by' => $user->id,
+                'updated_by' => $user->id,
+            ];
+            $order = Order::create($orderData);
 
-        // Create Order Items in our database
-        foreach ($orderItems as $orderItem) {
-            $orderItem['order_id'] = $order->id;
-            OrderItem::create($orderItem);
+            // Create Order Items in our database
+            foreach ($orderItems as $orderItem) {
+                $orderItem['order_id'] = $order->id;
+                OrderItem::create($orderItem);
+            }
+
+            // Create Payment in our database
+            $paymentData = [
+                'order_id' => $order->id,
+                'amount' => $totalPrice,
+                'status' => PaymentStatus::Pending,
+                'type' => 'cc',
+                'created_by' => $user->id,
+                'updated_by' => $user->id,
+                'session_id' => $checkout_session->id,
+            ];
+            Payment::create($paymentData);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
         }
+        DB::commit();
 
-        // Create Payment in our database
-        $paymentData = [
-            'order_id' => $order->id,
-            'amount' => $totalPrice,
-            'status' => PaymentStatus::Pending,
-            'type' => 'cc',
-            'created_by' => $user->id,
-            'updated_by' => $user->id,
-            'session_id' => $checkout_session->id,
-        ];
-
-        Payment::create($paymentData);
         CartItem::query()->where(['user_id' => $user->id])->delete();
 
         return redirect()->away($checkout_session->url, 303);
@@ -238,12 +246,19 @@ class CheckoutController extends Controller
 
     private function updateOrderAndPayment(Payment $payment)
     {
-        $payment->status = PaymentStatus::Paid->value;
-        $payment->update();
+        DB::beginTransaction();
+        try {
+            $payment->status = PaymentStatus::Paid->value;
+            $payment->update();
 
-        $order = $payment->order;
-        $order->status = OrderStatus::Paid->value;
-        $order->update();
+            $order = $payment->order;
+            $order->status = OrderStatus::Paid->value;
+            $order->update();
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            throw $e;
+        }
+        DB::commit;
 
         // Send an email
         $adminUsers = User::where('is_admin', 1)->get();
