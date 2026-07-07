@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Enums\AddressType;
-use App\Enums\CustomerStatus;
 use App\Http\Requests\CustomerRequest;
 use App\Models\Country;
 use App\Models\CustomerAddress;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class CustomerController extends Controller
 {
@@ -62,6 +62,7 @@ class CustomerController extends Controller
             }
         } catch (\Throwable $e) {
             DB::rollBack();
+            Log::critical(__METHOD__ . " method failed. " . $e->getMessage());
             throw $e;
         }
         DB::commit();

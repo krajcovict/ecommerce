@@ -13,6 +13,7 @@ use App\Models\Country;
 use App\Models\Customer;
 use App\Models\CustomerAddress;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class CustomerController extends Controller
 {
@@ -96,6 +97,7 @@ class CustomerController extends Controller
             }
         } catch (\Throwable $th) {
             DB::rollBack();
+            Log::critical(__METHOD__ . " method failed. " . $e->getMessage());
             throw $th;
         }
         DB::commit();

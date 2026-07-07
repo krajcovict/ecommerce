@@ -13,6 +13,7 @@ use App\Models\Payment;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -90,6 +91,7 @@ class CheckoutController extends Controller
             Payment::create($paymentData);
         } catch (\Exception $e) {
             DB::rollBack();
+            Log::critical(__METHOD__ . " method failed. " . $e->getMessage());
             throw $e;
         }
         DB::commit();
@@ -115,7 +117,9 @@ class CheckoutController extends Controller
 
             $session_id = $session->id;
 
-            $payment = Payment::query()->where('session_id', $session_id)
+            $payment = Payment::query()
+                ->with('order.user.customer')
+                ->where('session_id', $session_id)
                 ->whereIn('status', [PaymentStatus::Pending, PaymentStatus::Paid])
                 ->first();
             if (!$payment) {
@@ -125,13 +129,12 @@ class CheckoutController extends Controller
                 $this->updateOrderAndPayment($payment);
             }
 
-            //dd($payment->created_by);
-            //$customer = $stripe->customers->retrieve($session->customer);
-            //$name = $customer->user->id;
-            //return view('checkout.success', compact('customer'));
-            // TODO: implement customer
-            return view('checkout.success');
-            //return view('checkout.success', compact('name'));
+            $customer = $payment->order?->user?->customer;
+
+            return view('checkout.success', [
+                'firstName' => $customer?->first_name,
+                'lastName' => $customer?->last_name,
+            ]);
         } catch (NotFoundHttpException $e) {
             throw $e;
         } catch (\Exception $e) {
@@ -256,14 +259,19 @@ class CheckoutController extends Controller
             $order->update();
         } catch (\Throwable $e) {
             DB::rollBack();
+            Log::critical(__METHOD__ . " method failed. " . $e->getMessage());
             throw $e;
         }
-        DB::commit;
+        DB::commit();
 
-        // Send an email
-        $adminUsers = User::where('is_admin', 1)->get();
-        foreach ([...$adminUsers, $order->user] as $user) {
-            Mail::to($user)->send(new NewOrderEmail($order, (bool)$user->is_admin));
+        // Send emails to the customer and admin users
+        try {
+            $adminUsers = User::where('is_admin', 1)->get();
+            foreach ([...$adminUsers, $order->user] as $user) {
+                Mail::to($user)->send(new NewOrderEmail($order, (bool)$user->is_admin));
+            }
+        } catch (\Throwable $th) {
+            Log::critical("Email sending from CheckoutController updateOrderAndPayment() doesn't work. ". $th->getMessage());
         }
     }
 }
