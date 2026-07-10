@@ -56,8 +56,8 @@ class LoginRequest extends FormRequest
          * @var mixed
          */
         $user = $this->user();
-        $customer = $user->customer;
-        if ($customer->status !== CustomerStatus::Active->value) {
+        $customer = $user?->customer;
+        if ($customer && $customer->status !== CustomerStatus::Active->value) {
             Auth::guard('web')->logout();
             $this->session()->invalidate();
             $this->session()->regenerateToken();
