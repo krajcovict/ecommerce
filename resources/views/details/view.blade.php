@@ -14,6 +14,11 @@
         }" class="container p-5 mx-auto lg:w-2/3">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
             <div class="bg-white p-3 shadow rounded-lg md:col-span-2">
+                @if (session('error'))
+                    <div class="bg-red-500 rounded py-2 px-3 mb-3 text-white">
+                        {{ session('error') }}
+                    </div>
+                @endif
                 <form x-data="{
                     countries: {{ json_encode($countries) }},
                     billingAddress: {{ json_encode([

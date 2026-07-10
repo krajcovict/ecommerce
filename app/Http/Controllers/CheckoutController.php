@@ -21,6 +21,11 @@ class CheckoutController extends Controller
 {
     public function checkout(Request $request) {
         $user = $request->user();
+        $customer = $user->customer;
+
+        if (!$customer->billingAddress || !$customer->shippingAddress) {
+            return redirect()->route('details')->with('error', 'Please provide your address details first.');
+        }
 
         $stripe = new \Stripe\StripeClient([
           "api_key" => getenv('STRIPE_SECRET_KEY')
