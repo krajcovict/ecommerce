@@ -34,7 +34,7 @@
                   x-data="productItem(product)"
                   class="w-full flex flex-col sm:flex-row items-center gap-4"
                 >
-                  <a href="product.href" class="w-36 h-32 flex items-center justify-center overflow-hidden">
+                  <a :href="product.href" class="w-36 h-32 flex items-center justify-center overflow-hidden">
                     <img :src="product.image" class="object-cover" alt="" />
                   </a>
                   <div class="flex-1 flex flex-col justify-between">

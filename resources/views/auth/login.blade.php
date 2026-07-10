@@ -9,7 +9,7 @@
           <a
             href="{{ route('register') }}"
             class="text-sm text-purple-700 hover:text-purple-600"
-            >{{ __('Already registered?') }}</a
+            >{{ __('Create an account') }}</a
           >
         </p>
 
