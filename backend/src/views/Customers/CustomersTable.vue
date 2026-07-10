@@ -216,7 +216,7 @@ function deleteCustomer(customer) {
     }
     store.dispatch('deleteCustomer', customer)
         .then(res => {
-            // TODO show notification
+            store.commit('showToast', 'Customer has been deleted.');
             store.dispatch('getCustomers')
         })
 }
