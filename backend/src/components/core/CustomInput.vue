@@ -62,6 +62,7 @@
                 {{ append }}
             </span>
         </div>
+        <small v-if="errors && errors[0]" class="text-red-600 ml-2">{{ errors[0] }}</small>
     </div>
 </template>
 
@@ -69,7 +70,7 @@
 import { computed, ref } from 'vue';
 
 const props = defineProps({
-    modelValue: [String, Number, File],
+    modelValue: [String, Number, Boolean, File],
     label: String,
     type: {type: String, default: 'text' },
     name: String,
@@ -77,6 +78,7 @@ const props = defineProps({
     prepend: {type: String, default: '' },
     append: { type: String, default: '' },
     selectOptions: Array,
+    errors: {type: Array, required: false},
 })
 
 const id = computed(() => {
@@ -95,6 +97,10 @@ const inputClasses = computed(() => {
         cls.push(`rounded-r-md`)
     } else if (!props.prepend && !props.append) {
         cls.push(`rounded-md`)
+    }
+    
+    if (props.errors && props.errors[0]) {
+        cls.push('border-red-600 focus:border-red-600')
     }
 
     return cls.join(' ')
