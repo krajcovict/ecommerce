@@ -83,12 +83,12 @@
 
                                     <div class="px-1 py-1">
                                         <MenuItem v-slot="{ active }">
-                                          <button
+                                          <router-link
+                                            :to="{name: 'app.products.edit', params: {id: product.id}}"
                                             :class="[
                                               active ? 'bg-indigo-600 text-white' : 'text-gray-900',
                                               'group flex w-full items-center rounded-md px-2 py-2 text-sm',
                                             ]"
-                                            @click="editProduct(product)"
                                           >
                                             <PencilSquareIcon
                                               :active="active"
@@ -96,7 +96,7 @@
                                               aria-hidden="true"
                                             />
                                             Edit
-                                          </button>
+                                          </router-link>
                                         </MenuItem>
                                         <MenuItem v-slot="{ active }">
                                           <button
@@ -199,10 +199,6 @@ function sortProduct(field) {
         sortDirection.value = 'asc';
     }
     getProducts();
-}
-
-function editProduct(product) {
-    emit('clickEdit', product)
 }
 
 function deleteProduct(product) {

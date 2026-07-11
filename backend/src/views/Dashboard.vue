@@ -1,12 +1,12 @@
 <template>
     <div class="mb-2 flex items-center justify-between">
-        <h1 class="text-3xl font-semibold mr-2">Dashboard</h1>
+        <h1 class="text-3xl font-semibold mx-2">Dashboard</h1>
         <div class="flex items-center">
             <label class="mr-2">Change Date Period </label>
             <CustomInput type="select" v-model="chosenDate" @change="onDatePickerChange" :select-options="dateOptions"/>
         </div>
     </div>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 py-3">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 py-3 px-2">
         <div class="bg-white p-5 rounded-lg border border-gray-400 shadow-lg flex flex-col items-center justify-center animate-fade-in-down" style="animation-delay: 0.2s;">
             <template v-if="!loading.customersCount">
                 <label class="font-semibold">Active Customers</label>
@@ -36,7 +36,7 @@
             <Spinner v-else/>
         </div>
     </div>
-    <div class="grid grid-rows-1 lg:grid-rows-2 lg:grid-flow-col grid-cols-1 lg:grid-cols-3 gap-3 py-3">
+    <div class="grid grid-rows-1 lg:grid-rows-2 lg:grid-flow-col grid-cols-1 lg:grid-cols-3 px-2 gap-3 py-3">
         <div class="md:col-span-2 md:row-span-2 bg-white p-5 rounded-lg border border-gray-400 shadow-lg flex flex-col items-center animate-fade-in-down" style="animation-delay: 0.7s;">
             <label class="font-semibold">Latest Paid Orders</label>
             <template v-if="!loading.latestOrders">

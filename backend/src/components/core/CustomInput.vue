@@ -31,8 +31,7 @@
                 <input :type="type"
                 :name="name"
                 :required="required"
-                :value="props.modelValue"
-                @input="emit('change', $event.target.files[0])"
+                @change="onFileChange"
                 :class="inputClasses"
                 :placeholder="label"/>
             </template>
@@ -111,6 +110,12 @@ const emit = defineEmits(['update:modelValue', 'change'])
 function onChange(value) {
     emit('update:modelValue', value)
     emit('change', value)
+}
+
+function onFileChange(event) {
+    const file = event.target.files && event.target.files[0] ? event.target.files[0] : null
+    emit('update:modelValue', file)
+    emit('change', file)
 }
 
 </script>

@@ -15,6 +15,7 @@ import NotFound from '../views/NotFound.vue';
 import CustomersReport from "../views/Reports/CustomersReport.vue";
 import OrdersReport from "../views/Reports/OrdersReport.vue";
 import Report from "../views/Reports/Report.vue";
+import ProductForm from "../views/Products/ProductForm.vue";
 // TODO: Implement dynamic imports;
 
 const routes = [
@@ -38,6 +39,19 @@ const routes = [
                 path: 'products',
                 name: 'app.products',
                 component: Products
+            },
+            {
+                path: 'products/create',
+                name: 'app.products.create',
+                component: ProductForm
+            },
+            {
+                path: 'products/:id',
+                name: 'app.products.edit',
+                component: ProductForm,
+                props: {
+                    id: (value) => /^\d+$/.test(value)
+                }
             },
             {
                 path: 'orders',
