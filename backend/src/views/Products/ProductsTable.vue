@@ -207,7 +207,7 @@ function deleteProduct(product) {
     }
     store.dispatch('deleteProduct', product.id)
         .then(res => {
-            // TODO show notification
+            store.commit('showToast', 'Product has been deleted.');
             store.dispatch('getProducts')
         })
 }

@@ -72,8 +72,9 @@ function onSubmit() {
             .then(response => {
                 loading.value = false;
                 if (response.status === 200) {
-                    // TODO show notification
+                    store.commit('showToast', 'Product has been updated.');
                     store.dispatch('getProducts')
+                    router.push({name: 'app.products'})
                 }
         })
     } else {
@@ -81,8 +82,9 @@ function onSubmit() {
             .then(response => {
                 loading.value = false
                 if (response.status === 201) {
-                    // TODO show notification
+                    store.commit('showToast', 'Product has been created.');
                     store.dispatch('getProducts')
+                    router.push({name: 'app.products'})
                 }
         })
     }
