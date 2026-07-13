@@ -15,10 +15,16 @@
                 <CustomInput type="checkbox" class="mb-2 h-4 w-4" v-model="product.published" label="Published" />
             </div>
             <footer class="bg-gray-50 rounded-b-lg px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                <button type="submit"
+                <button type="button"
+                    @click="onSubmit($event, true)"
                     class="mt-3 w-full inline-flex justify-center sm:ml-3 border border-gray-300 rounded-md bg-indigo-600 text-white shadow-sm hover:bg-indigo-700 sm:mt-0 sm:w-auto px-4 py-2"
                     >
                     Save & Close
+                </button>
+                <button type="submit"
+                    class="mt-3 w-full inline-flex justify-center sm:ml-3 border border-gray-300 rounded-md bg-indigo-600 text-white shadow-sm hover:bg-indigo-700 sm:mt-0 sm:w-auto px-4 py-2"
+                    >
+                    Save
                 </button>
                 <router-link :to="{name: 'app.products'}"
                 class="mt-3 w-full inline-flex justify-center border border-gray-300 rounded-md shadow-sm hover:bg-[rgba(0,0,0,0.2)] sm:mt-0 sm:ml-3 sm:w-auto px-4 py-2"
@@ -64,7 +70,7 @@ onMounted(() => {
     }
 })
 
-function onSubmit() {
+function onSubmit($event, close = false) {
     loading.value = true
     if (product.value.id) {
         store.dispatch('updateProduct', product.value)
@@ -73,7 +79,10 @@ function onSubmit() {
                 if (response.status === 200) {
                     store.commit('showToast', 'Product has been updated.');
                     store.dispatch('getProducts')
-                    router.push({name: 'app.products'})
+                    if (close) {
+                        router.push({name: 'app.products'})
+                    }
+
                 }
         })
     } else {
@@ -83,7 +92,12 @@ function onSubmit() {
                 if (response.status === 201) {
                     store.commit('showToast', 'Product has been created.');
                     store.dispatch('getProducts')
-                    router.push({name: 'app.products'})
+                    if (close) {
+                        router.push({name: 'app.products'})
+                    } else {
+                        product.value = response.data
+                        router.push({name: 'app.products.edit', params: {id: response.data.id}})
+                    }
                 }
         })
     }
