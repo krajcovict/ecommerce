@@ -8,11 +8,14 @@ export function getCurrentUser({commit}, data) {
     })
 }
 
-export function login({ commit }, data) {
-    return axiosClient.post('/login', data)
+export function login({ commit }, credentials) {
+    return axiosClient.post('/login', credentials)
         .then(({ data }) => {
             commit('setUser', data.user);
-            commit('setToken', data.token);
+            commit('setToken', {
+                token: data.token,
+                remember: !!credentials.remember,
+            });
             return data;
         });
 }

@@ -1,6 +1,6 @@
 const state = {
     user: {
-        token: sessionStorage.getItem('TOKEN') || null,
+        token: localStorage.getItem('TOKEN') || sessionStorage.getItem('TOKEN') || null,
         data: null,
     },
     products: {

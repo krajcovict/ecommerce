@@ -15,8 +15,7 @@
                 <CustomInput type="checkbox" class="mb-2 h-4 w-4" v-model="product.published" label="Published" />
             </div>
             <footer class="bg-gray-50 rounded-b-lg px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                <button type="button"
-                    @click="onSubmit($event, true)"
+                <button type="submit"
                     class="mt-3 w-full inline-flex justify-center sm:ml-3 border border-gray-300 rounded-md bg-indigo-600 text-white shadow-sm hover:bg-indigo-700 sm:mt-0 sm:w-auto px-4 py-2"
                     >
                     Save & Close
@@ -37,10 +36,10 @@ import { ref, onMounted } from 'vue'
 import store from '../../store/index.js';
 import Spinner from '../../components/core/Spinner.vue';
 import CustomInput from '../../components/core/CustomInput.vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 const loading = ref(false)
-
+const router = useRouter();
 const route = useRoute()
 
 const product = ref({
@@ -49,7 +48,7 @@ const product = ref({
     image: null,
     description: null,
     price: null,
-    published: null,
+    published: false,
 })
 
 const emit = defineEmits(['update:modelValue'])

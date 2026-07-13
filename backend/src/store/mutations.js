@@ -5,11 +5,21 @@ export function setUser(state, user) {
 }
 
 export function setToken(state, token) {
-    state.user.token = token;
-    if (token) {
-        sessionStorage.setItem('TOKEN', token);
+    const tokenValue = typeof token === 'object' && token !== null ? token.token : token;
+    const remember = typeof token === 'object' && token !== null ? !!token.remember : false;
+
+    state.user.token = tokenValue;
+    if (tokenValue) {
+        if (remember) {
+            localStorage.setItem('TOKEN', tokenValue);
+            sessionStorage.removeItem('TOKEN');
+        } else {
+            sessionStorage.setItem('TOKEN', tokenValue);
+            localStorage.removeItem('TOKEN');
+        }
     } else {
         sessionStorage.removeItem('TOKEN');
+        localStorage.removeItem('TOKEN');
     }
 }
 
