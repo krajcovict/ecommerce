@@ -11,6 +11,7 @@
                 <CustomInput class="mb-2" v-model="product.title" label="ProductTitle" />
                 <CustomInput type="file" class="mb-2" label="Product Image" @change="onImageChange" />
                 <CustomInput type="textarea" class="mb-2" v-model="product.description" label="Description" />
+                <Editor class="mb-2" />
                 <CustomInput type="number" class="mb-2" v-model="product.price" label="price" prepend="$" />
                 <CustomInput type="checkbox" class="mb-2 h-4 w-4" v-model="product.published" label="Published" />
             </div>
@@ -43,6 +44,7 @@ import store from '../../store/index.js';
 import Spinner from '../../components/core/Spinner.vue';
 import CustomInput from '../../components/core/CustomInput.vue';
 import { useRoute, useRouter } from 'vue-router';
+import Editor from '../../components/core/Editor.vue';
 
 const loading = ref(false)
 const router = useRouter();
