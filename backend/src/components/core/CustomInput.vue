@@ -15,6 +15,16 @@
                 :placeholder="label"
                 ></textarea>
             </template>
+            <template v-else-if="type === 'richtext'">
+                <ckeditor
+                    v-if="canRenderRichtext"
+                    :required="required"
+                    v-model="richtextValue"
+                    :class="inputClasses"
+                    :editor="editor"
+                    :config="config"
+                />
+            </template>
             <template v-else-if="type === 'select'">
                 <select :name="name"
                 :required="required"
@@ -66,7 +76,8 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
+import { Ckeditor, useCKEditorCloud } from '@ckeditor/ckeditor5-vue';
 
 const props = defineProps({
     modelValue: [String, Number, Boolean, File],
@@ -97,7 +108,7 @@ const inputClasses = computed(() => {
     } else if (!props.prepend && !props.append) {
         cls.push(`rounded-md`)
     }
-    
+
     if (props.errors && props.errors[0]) {
         cls.push('border-red-600 focus:border-red-600')
     }
@@ -118,6 +129,46 @@ function onFileChange(event) {
     emit('change', file)
 }
 
+// CKEditor component:
+
+const cloud = useCKEditorCloud( {
+    version: '48.3.0',
+    premium: true
+} );
+
+const editor = computed( () => {
+    if ( !cloud.data.value ) {
+        return null;
+    }
+
+    return cloud.data.value.CKEditor.ClassicEditor;
+} );
+
+const config = computed( () => {
+        if ( !cloud.data.value ) {
+        return null;
+    }
+
+    const { Essentials, Paragraph, Bold, Italic } = cloud.data.value.CKEditor;
+    const { FormatPainter } = cloud.data.value.CKEditorPremiumFeatures;
+
+    return {
+        licenseKey: import.meta.env.VITE_CKEDITOR_PRODUCTION_KEY,
+        plugins: [ Essentials, Paragraph, Bold, Italic ],
+        toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
+    };
+} );
+
+const canRenderRichtext = computed(() => props.type === 'richtext' && !!editor.value && !!config.value)
+
+const richtextValue = computed({
+    get: () => props.modelValue ?? '',
+    set: (value) => onChange(value)
+})
+
 </script>
 
-<style scoped></style>
+<style scoped>
+:deep(.ck-editor) { width: 100%; }
+:deep(.ck-content) { min-height: 200px; }
+</style>

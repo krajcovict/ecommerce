@@ -135,7 +135,7 @@
               Add to Cart
             </button>
             <div class="mb-6" x-data="{expanded: false}">
-              {{ $product->description}}
+              {!! $product->description !!}
             </div>
           </div>
         </div>

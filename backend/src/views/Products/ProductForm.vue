@@ -5,13 +5,12 @@
         </h1>
     </div>
     <div class="bg-white rounded-lg shadow animate-fade-in-down">
-        <Spinner v-if="loading" class="absolute place-self-center flex items-center justify-center"/>
-        <form v-if="!loading" @submit.prevent="onSubmit">
+        <Spinner v-show="loading" class="absolute place-self-center flex items-center justify-center"/>
+        <form v-show="!loading" @submit.prevent="onSubmit">
             <div class="bg-white px-4 pt-5 pb-4">
                 <CustomInput class="mb-2" v-model="product.title" label="ProductTitle" />
                 <CustomInput type="file" class="mb-2" label="Product Image" @change="onImageChange" />
-                <CustomInput type="textarea" class="mb-2" v-model="product.description" label="Description" />
-                <Editor class="mb-2" />
+                <CustomInput type="richtext" class="mb-2" v-model="product.description" label="Description" />
                 <CustomInput type="number" class="mb-2" v-model="product.price" label="price" prepend="$" />
                 <CustomInput type="checkbox" class="mb-2 h-4 w-4" v-model="product.published" label="Published" />
             </div>
@@ -44,17 +43,16 @@ import store from '../../store/index.js';
 import Spinner from '../../components/core/Spinner.vue';
 import CustomInput from '../../components/core/CustomInput.vue';
 import { useRoute, useRouter } from 'vue-router';
-import Editor from '../../components/core/Editor.vue';
 
-const loading = ref(false)
-const router = useRouter();
 const route = useRoute()
+const loading = ref(!!route.params.id)
+const router = useRouter();
 
 const product = ref({
     id: null,
     title: null,
     image: null,
-    description: null,
+    description: '',
     price: null,
     published: false,
 })
