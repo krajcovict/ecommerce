@@ -59,3 +59,16 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+## Troubleshooting: Product Page Keeps Refreshing
+
+If pages keep refreshing in development, the app is often running in Vite hot mode.
+
+1. Stop the root frontend dev server for this app (if running): `npm run dev` in `/var/www/html/ecommerce`.
+2. Remove Laravel hot marker file: `rm -f public/hot`.
+3. Verify built assets exist: `ls -l public/build/manifest.json`.
+4. Hard-refresh the browser.
+
+Notes:
+- Running `npm run dev` under `/var/www/html/ecommerce/backend` is separate and should not drive Laravel Blade hot reload for this app.
+- If `public/hot` exists, `@vite(...)` will prefer the dev server and can trigger full-page reload behavior.

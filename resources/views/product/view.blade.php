@@ -1,5 +1,5 @@
 <x-app-layout>
-      <div x-data="productItem({{
+        <div x-data="productItem({{
             json_encode([
                 'id' => $product->id,
                 'image' => $product->image ?: '/img/noimage.png',
@@ -7,7 +7,7 @@
                 'price' => $product->price,
                 'addToCartUrl' => route('cart.add', $product)
             ])
-       }})" class="container p-5 mx-auto">
+         }})" class="container p-5 mx-auto">
         <div class="grid gap-6 grid-cols-1 lg:grid-cols-5">
           <div class="lg:col-span-3">
             <div
@@ -40,8 +40,9 @@
                     <img :src="image" alt="" class="w-auto mx-auto"/>
                   </div>
                 </template>
-                <a
-                  @click.prevent="prev"
+                <button
+                  type="button"
+                  @click.prevent="prev()"
                   class="cursor-pointer bg-black/30 text-white absolute left-0 top-1/2 -translate-y-1/2"
                 >
                   <svg
@@ -58,9 +59,10 @@
                       d="M15 19l-7-7 7-7"
                     />
                   </svg>
-                </a>
-                <a
-                  @click.prevent="next"
+                </button>
+                <button
+                  type="button"
+                  @click.prevent="next()"
                   class="cursor-pointer bg-black/30 text-white absolute right-0 top-1/2 -translate-y-1/2"
                 >
                   <svg
@@ -77,17 +79,18 @@
                       d="M9 5l7 7-7 7"
                     />
                   </svg>
-                </a>
+                </button>
               </div>
               <div class="flex">
                 <template x-for="image in images">
-                  <a
+                  <button
+                    type="button"
                     @click.prevent="activeImage = image"
                     class="cursor-pointer w-[80px] border border-gray-300 hover:border-purple-500 flex items-center justify-center"
                     :class="{'border-purple-600': activeImage === image}"
                   >
                     <img :src="image" alt="" class="w-auto max-auto max-h-full"/>
-                  </a>
+                  </button>
                 </template>
               </div>
             </div>
@@ -110,10 +113,11 @@
                 class="w-32 focus:border-purple-500 focus:outline-none rounded"
               />
             </div>
-            <button
-              @click="addToCart($refs.quantityEl.value)"
-              class="btn-primary py-4 text-lg flex justify-center min-w-0 w-full mb-6"
-            >
+              <button
+                type="button"
+                @click.prevent="addToCart($refs.quantityEl.value)"
+                class="btn-primary py-4 text-lg flex justify-center min-w-0 w-full mb-6"
+              >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 class="h-6 w-6 mr-2"

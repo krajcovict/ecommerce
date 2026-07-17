@@ -48,10 +48,7 @@ const routes = [
             {
                 path: 'products/:id',
                 name: 'app.products.edit',
-                component: ProductForm,
-                props: {
-                    id: (value) => /^\d+$/.test(value)
-                }
+                component: ProductForm
             },
             {
                 path: 'orders',
