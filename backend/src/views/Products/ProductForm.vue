@@ -11,8 +11,8 @@
                 <CustomInput class="mb-2" v-model="product.title" label="ProductTitle" />
                 <CustomInput type="file" class="mb-2" label="Product Image" @change="onImageChange" />
                 <CustomInput type="richtext" class="mb-2" v-model="product.description" label="Description" />
-                <CustomInput type="number" class="mb-2" v-model="product.price" label="Price" prepend="$" />
-                <CustomInput type="number" min="0" class="mb-2" v-model="product.quantity" label="Quantity" />
+                <CustomInput type="number" step="0.01" class="mb-2" v-model="product.price" label="Price" prepend="$" />
+                <CustomInput type="number" step="1" class="mb-2" v-model="product.quantity" label="Quantity" />
                 <CustomInput type="checkbox" class="mb-2 h-4 w-4" v-model="product.published" label="Published" />
             </div>
             <footer class="bg-gray-50 rounded-b-lg px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">

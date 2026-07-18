@@ -14,6 +14,7 @@ document.addEventListener("alpine:init", () => {
 
   Alpine.data("toast", () => ({
     visible: false,
+    type: 'success',
     delay: 5000,
     percent: 0,
     interval: null,
@@ -23,9 +24,10 @@ document.addEventListener("alpine:init", () => {
       this.visible = false;
       clearInterval(this.interval);
     },
-    show(message) {
+    show(message, type = 'success') {
       this.visible = true;
       this.message = message;
+      this.type = type;
 
       if (this.interval) {
         clearInterval(this.interval);
@@ -65,7 +67,6 @@ document.addEventListener("alpine:init", () => {
             });
           })
           .catch(response => {
-            console.log(response);
             this.$dispatch('notify', {
               message: response.message || 'Server Error. Please try again.',
               type: 'error'

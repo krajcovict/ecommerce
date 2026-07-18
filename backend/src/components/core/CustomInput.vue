@@ -65,7 +65,8 @@
                 @input="emit('update:modelValue', $event.target.value)"
                 :class="inputClasses"
                 :placeholder="label"
-                step="0.01"/>
+                :step="props.step"
+                min="0"/>
             </template>
             <span v-if="append" class="inline-flex items-center px-3 rounded-r-md border border-l-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">
                 {{ append }}
@@ -85,6 +86,7 @@ const props = defineProps({
     type: {type: String, default: 'text' },
     name: String,
     required: Boolean,
+    step: [String, Number],
     prepend: {type: String, default: '' },
     append: { type: String, default: '' },
     selectOptions: Array,

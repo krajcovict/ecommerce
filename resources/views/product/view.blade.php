@@ -119,7 +119,6 @@
                 class="w-32 focus:border-purple-500 focus:outline-none rounded"
               />
             </div>
-            <span x-text="product.quantity"></span>
               <button
                 type="button"
                 :disabled="product.quantity === 0"
