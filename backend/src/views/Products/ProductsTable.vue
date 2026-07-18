@@ -33,6 +33,8 @@
                         :sort-field="sortField" :sort-direction="sortDirection">Title</TableHeaderCell>
                         <TableHeaderCell @click="sortProduct" class="border-b-2 p-2 text-left" field="price"
                         :sort-field="sortField" :sort-direction="sortDirection">Price</TableHeaderCell>
+                        <TableHeaderCell @click="sortProduct" class="border-b-2 p-2 text-left" field="quantity"
+                        :sort-field="sortField" :sort-direction="sortDirection">Quantity</TableHeaderCell>
                         <TableHeaderCell @click="sortProduct" class="border-b-2 p-2 text-left" field="updated_at"
                         :sort-field="sortField" :sort-direction="sortDirection">Last Updated At</TableHeaderCell>
                         <TableHeaderCell field="actions"></TableHeaderCell>
@@ -56,6 +58,7 @@
                             {{ product.title }}
                         </td>
                         <td class="border-b p-2">{{ product.price }}</td>
+                        <td class="border-b p-2">{{ product.quantity }}</td>
                         <td class="border-b text-pretty p-2">{{ product.updated_at }}</td>
                         <td class="border-b p-2">
                             <Menu as="div" class="relative inline-block text-left">
