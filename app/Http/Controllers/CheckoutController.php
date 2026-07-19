@@ -73,6 +73,11 @@ class CheckoutController extends Controller
             ];
         }
 
+        if ($product->quantity !== null) {
+                $product->quantity -= $quantity;
+                $product->save();
+            }
+
         $checkout_session = $stripe->checkout->sessions->create
             ([
               'line_items' => $lineItems,
