@@ -101,7 +101,7 @@
               {{ $product->title }}
             </h1>
             <div class="text-xl font-bold mb-6">${{ $product->price }}</div>
-            @if ($product->quantity === 0)
+            @if ($product->quantity <= 0)
                 <div class="bg-red-600 text-white py-2 px-3 rounded mb-3">
                     This product is out of stock
                 </div>
@@ -121,7 +121,7 @@
             </div>
               <button
                 type="button"
-                :disabled="product.quantity === 0"
+                :disabled="product.quantity <= 0"
                 @click.prevent="addToCart($refs.quantityEl.value)"
                 class="btn-primary py-4 text-lg flex justify-center min-w-0 w-full mb-6"
                 :class="product.quantity === 0 ? 'cursor-not-allowed' : 'cursor-pointer'"

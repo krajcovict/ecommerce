@@ -2,6 +2,11 @@
     <main class="p-5">
       <div class="container lg:w-2/3 xl:w-2/3 mx-auto">
         <h1 class="text-3xl font-bold mb-6">Your Cart Items</h1>
+        @if (session('error'))
+            <div class="bg-red-500 rounded py-2 px-3 mb-3 text-white">
+                {{ session('error') }}
+            </div>
+        @endif
         <div x-data="{
             cartItems: {{
                 json_encode(

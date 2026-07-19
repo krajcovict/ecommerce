@@ -36,6 +36,21 @@ class CheckoutController extends Controller
         $lineItems = [];
         $orderItems = [];
         $totalPrice = 0;
+
+        foreach ($products as $product) {
+            $quantity = $cartItems[$product->id]['quantity'];
+            if ($product->quantity !== null && $product->quantity < $quantity) {
+                $message = match ($product->quantity) {
+                    0 => 'The product "'. $product->title .'" is out of stock',
+                    1 => 'There is only one item left for product "' . $product->title. '"',
+                    default => 'There are only ' . $product->quantity . ' items left for product "'. $product->title . '"',
+                };
+                return redirect()->back()->with('error', $message);
+            }
+        }
+
+        DB::beginTransaction();
+
 // TODO: Repair Stripe checkout with 'noimage' item
         foreach ($products as $product) {
             $quantity = $cartItems[$product->id]['quantity'];
@@ -66,7 +81,6 @@ class CheckoutController extends Controller
               'cancel_url' => route('checkout.failure', [], true),
             ]);
 
-        DB::beginTransaction();
         try {
             // Create Order in our database
             $orderData = [
