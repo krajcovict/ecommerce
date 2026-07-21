@@ -13,7 +13,7 @@
                     $products->map(fn($product) => [
                         'id' => $product->id,
                         'slug' => $product->slug,
-                        'image' => $product->image ?: '/storage/public/images/noimage.png',
+                        'image' => $product->image ?: asset('/img/noimage.png'),
                         'title' => $product->title,
                         'price' => $product->price,
                         'quantity' => $cartItems[$product->id]['quantity'],
