@@ -7,13 +7,17 @@
     <div class="bg-white rounded-lg shadow animate-fade-in-down">
         <Spinner v-show="loading" class="absolute place-self-center flex items-center justify-center"/>
         <form v-show="!loading" @submit.prevent="onSubmit">
-            <div class="bg-white px-4 pt-5 pb-4">
-                <CustomInput class="mb-2" v-model="product.title" label="ProductTitle" />
-                <CustomInput type="file" class="mb-2" label="Product Image" @change="onImageChange" />
-                <CustomInput type="richtext" class="mb-2" v-model="product.description" label="Description" />
-                <CustomInput type="number" step="0.01" class="mb-2" v-model="product.price" label="Price" prepend="$" />
-                <CustomInput type="number" step="1" class="mb-2" v-model="product.quantity" label="Quantity" />
-                <CustomInput type="checkbox" class="mb-2 h-4 w-4" v-model="product.published" label="Published" />
+            <div class="grid grid-cols-1 md:grid-cols-3">
+                <div class="col-span-2 px-4 pt-5 pb-4">
+                    <CustomInput class="mb-2" v-model="product.title" label="ProductTitle" />
+                    <CustomInput type="richtext" class="mb-2" v-model="product.description" label="Description" />
+                    <CustomInput type="number" step="0.01" class="mb-2" v-model="product.price" label="Price" prepend="$" />
+                    <CustomInput type="number" step="1" class="mb-2" v-model="product.quantity" label="Quantity" />
+                    <CustomInput type="checkbox" class="mb-2 h-4 w-4" v-model="product.published" label="Published" />
+                </div>
+                <div class="col-span-1 px-4 pt-5 pb-4">
+                    <ImagePreview/>
+                </div>
             </div>
             <footer class="bg-gray-50 rounded-b-lg px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                 <button type="button"
@@ -44,6 +48,7 @@ import store from '../../store/index.js';
 import Spinner from '../../components/core/Spinner.vue';
 import CustomInput from '../../components/core/CustomInput.vue';
 import { useRoute, useRouter } from 'vue-router';
+import ImagePreview from '../../components/ImagePreview.vue';
 
 const route = useRoute()
 const loading = ref(!!route.params.id)
@@ -106,7 +111,7 @@ function onSubmit($event, close = false) {
     }
 }
 
-function onImageChange(file) {
-    product.value.image = file || null
-}
+// function onImageChange(file) {
+//     product.value.image = file || null
+// }
 </script>
