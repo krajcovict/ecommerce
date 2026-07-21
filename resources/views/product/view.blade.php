@@ -13,7 +13,7 @@
           <div class="lg:col-span-3">
             <div
               x-data="{
-  images: ['{{ $product->image }}', 'img/1_2.jpg', 'img/1_3.jpg', 'img/1_4.jpg'],
+  images: ['{{ $product->image ?: '/img/noimage.png' }}', 'img/1_2.jpg', 'img/1_3.jpg', 'img/1_4.jpg'],
   activeImage: null,
   prev() {
       let index = this.images.indexOf(this.activeImage);

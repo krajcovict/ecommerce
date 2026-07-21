@@ -16,11 +16,11 @@
                     ]) }})"
           class="border border-1 border-gray-200 rounded-md hover:border-purple-600 transition-colors bg-white"
         >
-          <a href="{{ route('product.view', $product->slug) }}" class="block overflow-hidden aspect-w-3 aspect-h-3">
+          <a href="{{ route('product.view', $product->slug) }}" class="block overflow-hidden aspect-square">
             <img
               :src="product.image"
               alt=""
-              class="rounded-lg hover:scale-105 hover:rotate-1 transition-transform object-cover"
+              class="rounded-lg hover:scale-105 hover:rotate-1 transition-transform h-full w-full object-cover"
             />
           </a>
           <div class="p-4">
