@@ -16,7 +16,7 @@
                     <CustomInput type="checkbox" class="mb-2 h-4 w-4" v-model="product.published" label="Published" />
                 </div>
                 <div class="col-span-1 px-4 pt-5 pb-4">
-                    <ImagePreview/>
+                    <ImagePreview v-model="product.images" />
                 </div>
             </div>
             <footer class="bg-gray-50 rounded-b-lg px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
@@ -57,7 +57,7 @@ const router = useRouter();
 const product = ref({
     id: null,
     title: null,
-    image: null,
+    images: [],
     description: '',
     price: null,
     quantity: null,
