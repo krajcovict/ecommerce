@@ -6,7 +6,7 @@
     </div>
     <div class="bg-white rounded-lg shadow animate-fade-in-down">
         <Spinner v-show="loading" class="absolute place-self-center flex items-center justify-center"/>
-        <form v-show="!loading" @submit.prevent="onSubmit">
+        <form v-if="!loading" @submit.prevent="onSubmit">
             <div class="grid grid-cols-1 md:grid-cols-3">
                 <div class="col-span-2 px-4 pt-5 pb-4">
                     <CustomInput class="mb-2" v-model="product.title" label="ProductTitle" />
@@ -17,10 +17,8 @@
                 </div>
                 <div class="col-span-1 px-4 pt-5 pb-4">
                     <ImagePreview v-model="product.images"
-                        :images="[{id: 1, 'url': 'https://image.smedata.sk/image/w450-h300/019f8417-da61-7393-9249-812d89870ab3.jpg'}]"
+                        :images="product.images"
                         v-model:deleted-images="product.deleted_images" />
-                    <pre>{{ product.images }} {{  product.deleted_images }}</pre>
-
                 </div>
             </div>
             <footer class="bg-gray-50 rounded-b-lg px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
@@ -115,8 +113,4 @@ function onSubmit($event, close = false) {
         })
     }
 }
-
-// function onImageChange(file) {
-//     product.value.image = file || null
-// }
 </script>
