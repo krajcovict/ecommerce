@@ -1,8 +1,11 @@
 <template>
     <div class="flex flex-wrap gap-1">
         <div v-for="image in imageUrls" class="relative w-30 h-30 rounded-md border-2 flex items-center justify-center text-white border-gray-300 hover:border-purple-500 overflow-hidden">
-            <img :src="image.url" class="h-full w-full object-cover">
-            <span class="absolute top-1 right-1 cursor-pointer rounded bg-purple-500" @click="removeImage(image)">
+            <img :src="image.url" class="h-full w-full object-cover" :class="image.deleted ? 'opacity-50' : ''">
+            <span v-if="image.deleted" class="absolute flex left-0 bottom-0 right-0 py-1 px-2 bg-gray-600 w-full text-white-50 text-center opacity-75">
+                To be deleted
+            </span>
+            <span class="absolute top-1 right-1 cursor-pointer rounded bg-purple-500" :class="image.deleted ? 'opacity-50' : ''" @click="removeImage(image)">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
                 </svg>
@@ -18,16 +21,17 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { v4 as uuidv4 } from 'uuid';
 
 // Refs
 const files = ref([])
 const imageUrls = ref([])
+const deletedImages = ref([])
 
 // Props & Emit
-const props = defineProps(['modelValue'])
-const emit = defineEmits(['update:modelValue'])
+const props = defineProps(['modelValue', 'deletedImages', 'images'])
+const emit = defineEmits(['update:modelValue', 'update:deletedImages'])
 
 // Methods
 function onFileChange($event) {
@@ -59,14 +63,34 @@ function readFile(file) {
 }
 
 function removeImage(image) {
-    files.value = files.value.filter(f => f.id !== image.id)
-    imageUrls.value = imageUrls.value.filter(f => f.id !== image.id)
-    emit('update:modelValue', files.value)
+    if (image.isProp) {
+        // if image is coming from server
+        deletedImages.value.push(image.id)
+        image.deleted = true
+
+        emit('update:deletedImages', deletedImages.value)
+    } else {
+        // if it has just been added in the browser
+        files.value = files.value.filter(f => f.id !== image.id)
+        imageUrls.value = imageUrls.value.filter(f => f.id !== image.id)
+        emit('update:modelValue', files.value)
+    }
+
 }
 
 // Hooks
+watch('props.images', () => {
+    imageUrls.value = [
+        ...imageUrls.value,
+        ...props.images.map(im => ({
+            ...im,
+            isProp: true
+        }))
+    ]
+}, {immediate: true, deep: true})
 onMounted(() => {
     emit('update:modelValue', [])
+    emit('update:deletedImages', deletedImages.value)
 })
 
 </script>

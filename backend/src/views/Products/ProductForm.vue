@@ -16,7 +16,11 @@
                     <CustomInput type="checkbox" class="mb-2 h-4 w-4" v-model="product.published" label="Published" />
                 </div>
                 <div class="col-span-1 px-4 pt-5 pb-4">
-                    <ImagePreview v-model="product.images" />
+                    <ImagePreview v-model="product.images"
+                        :images="[{id: 1, 'url': 'https://image.smedata.sk/image/w450-h300/019f8417-da61-7393-9249-812d89870ab3.jpg'}]"
+                        v-model:deleted-images="product.deleted_images" />
+                    <pre>{{ product.images }} {{  product.deleted_images }}</pre>
+
                 </div>
             </div>
             <footer class="bg-gray-50 rounded-b-lg px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
@@ -58,6 +62,7 @@ const product = ref({
     id: null,
     title: null,
     images: [],
+    deleted_images: [],
     description: '',
     price: null,
     quantity: null,
