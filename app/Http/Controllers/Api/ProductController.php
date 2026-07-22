@@ -7,6 +7,7 @@ use App\Http\Requests\ProductRequest;
 use App\Http\Resources\ProductListResource;
 use App\Http\Resources\ProductResource;
 use App\Models\Api\Product;
+use App\Models\ProductImage;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
@@ -46,21 +47,17 @@ class ProductController extends Controller
             $data['created_by'] = $request->user()->id;
             $data['updated_by'] = $request->user()->id;
 
-            /** @var \Illuminate\Http\UploadedFile $image */
-            $image = $data['image'] ?? null;
-            // Check if image was given and save on local filesystem
-            if ($image) {
-            $relativePath = $this->saveImage($image);
-            $data['image'] = URL::to(Storage::url($relativePath));
-            $data['image_mime'] = $image->getClientMimeType();
-            $data['image_size'] = $image->getSize();
-            }
+            /** @var \Illuminate\Http\UploadedFile[] $images */
+            $images = $data['images'] ?? [];
+
+            // Removing images and deleted_images before saving product row in the database
+            unset($data['images']);
 
             $product = Product::create($data);
 
+            $this->saveImages($images, $product);
+
             return new ProductResource($product);
-
-
     }
 
     /**
@@ -80,24 +77,22 @@ class ProductController extends Controller
         $data['updated_by'] = $request->user()->id;
 
         /**
-         * @var \Illuminate\Http\UploadedFile $image
+         * @var \Illuminate\Http\UploadedFile[] $images
          */
-        $image = $data['image'] ?? null;
+        $images = $data['images'] ?? [];
+        $deletedImages = $data['deleted_images'] ?? [];
 
-        if ($image) {
-            $relativePath = $this->saveImage($image);
-            $data['image'] = URL::to(Storage::url($relativePath));
-            $data['image_mime'] = $image->getClientMimeType();
-            $data['image_size'] = $image->getSize();
-            }
-
-        // If there is an old image before updating, delete it
-        if ($product->image) {
-            Storage::deleteDirectory('images/' . dirname($product->image));
+        $this->saveImages($images, $product);
+        if (count($deletedImages) > 0) {
+            $this->deleteImages($deletedImages, $product);
         }
+
+        // Removing images and deleted_images before saving product row in the database
+        unset($data['images']);
 
         $product->update($data);
 
+        return new ProductResource($product);
     }
 
     /**
@@ -109,13 +104,38 @@ class ProductController extends Controller
         return response()->noContent();
     }
 
-    private function saveImage(\Illuminate\Http\UploadedFile $image)
-    {
-        $path = Str::random();
-        if (!Storage::disk('public')->putFileAs('images/' . $path, $image, $image->getClientOriginalName())) {
-            throw new \Exception("Unable to save file \"{$image->getClientOriginalName()}\"");
-        }
-        return 'images/' . $path . '/' . $image->getClientOriginalName();
 
+    private function saveImages($images, Product $product)
+    {
+        foreach ($images as $i => $image) {
+            $path = Str::random();
+            if (!Storage::disk('public')->putFileAs('images/' . $path, $image, $image->getClientOriginalName())) {
+                throw new \Exception("Unable to save file \"{$image->getClientOriginalName()}\"");
+            }
+
+            $relativePath = 'images/' . $path . '/' . $image->getClientOriginalName();
+
+            ProductImage::create([
+                'product_id' => $product->id,
+                'path' => $relativePath,
+                'url' => URL::to(Storage::url($relativePath)),
+                'mime' => $image->getClientMimeType(),
+                'size' => $image->getSize(),
+                'position' => $i + 1
+            ]);
+        }
+    }
+
+    private function deleteImages($imageIds, Product $product)
+    {
+        $images = ProductImage::query()
+            ->where('product_id', $product->id)->whereIn('id', $imageIds)->get();
+
+        foreach ($images as $image) {
+            if ($image->path) {
+                Storage::deleteDirectory('images/' . dirname($image->path));
+            }
+            $image->delete();
+        }
     }
 }

@@ -88,6 +88,7 @@ function onSubmit($event, close = false) {
             .then(response => {
                 loading.value = false;
                 if (response.status === 200) {
+                    product.value = response.data
                     store.commit('showToast', 'Product has been updated.');
                     store.dispatch('getProducts')
                     if (close) {
@@ -101,6 +102,7 @@ function onSubmit($event, close = false) {
             .then(response => {
                 loading.value = false
                 if (response.status === 201) {
+                    product.value = response.data
                     store.commit('showToast', 'Product has been created.');
                     store.dispatch('getProducts')
                     if (close) {
