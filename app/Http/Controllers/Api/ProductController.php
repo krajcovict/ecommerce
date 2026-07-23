@@ -109,11 +109,14 @@ class ProductController extends Controller
     {
         foreach ($images as $i => $image) {
             $path = Str::random();
-            if (!Storage::disk('public')->putFileAs('images/' . $path, $image, $image->getClientOriginalName())) {
+            $name = Str::random(5) . '.' . $image->getClientOriginalExtension();
+
+            // Here we are saving the file in our filesystem
+            if (!Storage::disk('public')->putFileAs('images/' . $path, $image, $name)) {
                 throw new \Exception("Unable to save file \"{$image->getClientOriginalName()}\"");
             }
 
-            $relativePath = 'images/' . $path . '/' . $image->getClientOriginalName();
+            $relativePath = 'images/' . $path . '/' . $name;
 
             ProductImage::create([
                 'product_id' => $product->id,
