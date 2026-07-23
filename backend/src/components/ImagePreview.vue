@@ -2,9 +2,13 @@
     <div class="flex flex-wrap gap-1">
         <div v-for="image in imageUrls" class="relative w-30 h-30 rounded-md border-2 flex items-center justify-center text-white border-gray-300 hover:border-purple-500 overflow-hidden">
             <img :src="image.url" class="h-full w-full object-cover" :class="image.deleted ? 'opacity-50' : ''">
-            <span v-if="image.deleted" class="absolute flex left-0 bottom-0 right-0 py-1 px-2 bg-gray-600 w-full text-white-50 text-center opacity-75">
+            <small v-if="image.deleted" class="absolute flex left-0 bottom-0 right-0 py-1 px-2 bg-gray-600 w-full text-white-50 justify-between items-center opacity-75">
                 To be deleted
-            </span>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                    class="size-4 cursor-pointer" @click="revertImage(image)">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />
+                </svg>
+            </small>
             <span class="absolute top-1 right-1 cursor-pointer rounded bg-purple-500" :class="image.deleted ? 'opacity-50' : ''" @click="removeImage(image)">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
@@ -75,7 +79,15 @@ function removeImage(image) {
         imageUrls.value = imageUrls.value.filter(f => f.id !== image.id)
         emit('update:modelValue', files.value)
     }
+}
 
+function revertImage(image) {
+    if (image.isProp) {
+        deletedImages.value = deletedImages.value.filter(id => id !== image.id)
+        image.deleted = false
+
+        emit('update:deletedImages', deletedImages.value)
+    }
 }
 
 // Hooks
